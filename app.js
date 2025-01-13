@@ -36,6 +36,5 @@ app.use("/user", userRouter);
 app.use("/image", imageRouter);
 app.use("/post", postRouter);
 app.use("/adv", advRouter);
-function init() {
-    app.listen(3000, () => console.log("Сервер запущен и ожидает подключения..."));
-}
+
+app.listen(3000, () => console.log("Сервер запущен и ожидает подключения..."));
