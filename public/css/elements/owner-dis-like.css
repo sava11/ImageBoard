@@ -1,0 +1,32 @@
+.like-button, .dislike-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border:none;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #31c6ad;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.like-button span, .dislike-button span {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Иконки */
+.like-icon, .dislike-icon {
+    font-size: 18px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Расположение кнопок */
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}

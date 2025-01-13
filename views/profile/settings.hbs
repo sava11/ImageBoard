@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{documentName}}</title>
+    <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
+    <link rel="stylesheet" href="/css/test.css" type="text/css" />
+</head>
+
+<body>
+    <div class="header">
+        <a class="logo" href="/">
+            <img src="/imgs/ori_ico1.svg" alt="Logo">
+            <span>artX</span>
+        </a>
+        <div class="user">
+            <a href="/user/login">
+                <span>{{userName}}</span>
+            </a>
+            {{#if isAuthenticated}}
+            <button class="menu-button">
+                <img src="/imgs/settings.svg" width="24px">
+            </button>
+            <div class="dropdown-menu hidden">
+                <a href="/user/settings">
+                    <div class="menu-item"><span>настройки</span></div>
+                </a>
+                <a href="/post/upload">
+                    <div class="menu-item"><span>загрузить</span></div>
+                </a>
+                <button id="user-exit" class="menu-item">выйти</button>
+            </div>
+            <script src="/js/elements/header.js"></script>
+            {{/if}}
+        </div>
+    </div>
+
+    <div class="content">
+        <div>
+            <a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
+                title="" border="0"><img id="advertisement-image-top" src="" alt="Advertisement"></a>
+            <script src="/js/get-random-adv.js"></script>
+        </div>
+        <div id="item-container" class="flex-container">
+            <div class="flex-item">
+                <label>
+                    Имя пользователя:
+                    <input id="login" type="text" value="{{user.login}}" required>
+                </label><br>
+                <label>
+                    Email:
+                    <input id="email" type="email" value="{{user.email}}" required>
+                </label><br>
+                <label>
+                    Текущий пароль:
+                    <input id="password" type="password" value="" required>
+                </label><br>
+                <label>
+                    Новый пароль:
+                    <input id="new_password" type="password" value="" required>
+                </label><br>
+                <button id="save" type="button">Сохранить изменения</button><br>
+                <button id="remove" type="button">Удалить профиль</button>
+            </div>
+            <div class="flex-item">
+            </div>
+        </div>
+    </div>
+    <script>
+        // Сохранение изменений
+        document.getElementById("save").addEventListener("click", async () => {
+            const login = document.getElementById("login").value.trim();
+            const email = document.getElementById("email").value.trim();
+            //const password= document.getElementById("password").value;
+            //const new_password= document.getElementById("new_password").value;
+
+            if (!login || !email) {// || !password
+                alert("поля 'Имя', 'Почта' должны быть заполнены.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/user/edit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ login, email }),//, password, new_password
+                });
+
+                if (response.ok) {
+                    alert("Профиль успешно обновлен.");
+                    location.reload(); // Обновляем страницу, чтобы увидеть изменения
+                } else {
+                    const error = await response.json();
+                    alert(`Ошибка: ${error.message}`);
+                }
+            } catch (err) {
+                console.error("Ошибка при сохранении изменений:", err);
+                alert("Произошла ошибка при сохранении изменений.");
+            }
+        });
+
+        // Кнопка удаления профиля
+        document.getElementById("remove").addEventListener("click", async () => {
+            if (!confirm("Вы уверены, что хотите удалить профиль?")) return;
+
+            try {
+                const response = await fetch("/user/delete", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (response.ok) {
+                    alert("Ваш профиль удалён.");
+                    window.location.href = "/"; // Перенаправление на главную
+                } else {
+                    const error = await response.json();
+                    alert(`Ошибка: ${error.message}`);
+                }
+            } catch (err) {
+                console.error("Ошибка при удалении профиля:", err);
+                alert("Произошла ошибка при удалении профиля.");
+            }
+        });
+    </script>
+</body>
+
+</html>

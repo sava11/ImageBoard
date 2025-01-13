@@ -1,0 +1,165 @@
+:root {
+    --container-gap:15px;
+    --card-width: 180px;
+    --card-height: auto;
+    --card-padding: 20px;
+    --card-border-radius: 10px;
+    --thumbnail-border-radius: 6px;
+    --hover-scale: 1.05;
+    --thumbnail-max-height: 200px;
+    --thumbnail-max-width: 100%;
+    --card-text-color: #344047;
+    --like-color: #ff1100;
+    --dislike-color: #000000;
+    --hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-container {
+    align-items: center;
+    justify-content: space-around;
+    /* padding: var(--card-padding); */
+    display: grid;
+    gap: var(--container-gap);
+    grid-template-columns: repeat(auto-fill, calc(var(--card-width) + ( var(--card-padding) * 2 ) ));
+}
+
+.card-item {
+    display: block;
+    width: var(--card-width);
+    height: var(--card-height);
+    padding: var(--card-padding);
+    text-decoration: none;
+    border-radius: var(--card-border-radius);
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-item:hover {
+    transform: scale(var(--hover-scale));
+    box-shadow: var(--hover-shadow);
+}
+
+.thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: var(--thumbnail-max-width);
+    max-height: var(--thumbnail-max-height);
+    overflow: hidden;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--thumbnail-border-radius);
+    pointer-events: none;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--card-text-color);
+}
+
+.controls p {
+    margin: 0;
+}
+
+.likes {
+    color: var(--like-color);
+}
+
+.dislikes {
+    color: var(--dislike-color);
+}
+
+.likes::before {
+    content: "\2665";
+    color: red;
+}
+
+.dislikes::before {
+    content: "\2660";
+    color: black;
+}
+
+/*
+.flex-container {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.flex-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: hsla(187, 100%, 50%, 0.284);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: var(--card-padding);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: var(--card-width);
+    position: relative;
+}
+
+.flex-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail {
+    position: relative;
+    width: var(--card-width);
+    height: calc(var(--card-width) * 1.2);
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.thumbnail img {
+    position: absolute;
+    //left: 50%;
+    //top: 50%; 
+    height: 100%;
+    width: auto;
+    //transform: translate(-50%, -50%);
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.controls p {
+    margin: 0;
+    padding: 0;
+}
+
+.likes, .dislikes {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.likes::before {
+    content: "\2665"; 
+    color: red;
+}
+
+.dislikes::before {
+    content: "\2660"; 
+    color: black;
+}
+
+*/

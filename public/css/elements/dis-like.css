@@ -1,0 +1,49 @@
+.like-button, .dislike-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #d3d1d1;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.like-button:hover, .dislike-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.like-button.active, .dislike-button.active {
+    color: #06b5d4; /* Цвет активной кнопки */
+    font-weight: bold; /* Дополнительное выделение активной кнопки */
+    background-color: rgba(0, 0, 0, 0.2); /* Легкий фон для активной кнопки */
+}
+
+.like-button span, .dislike-button span {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Анимация нажатия */
+.like-button:active, .dislike-button:active {
+    transform: scale(0.95);
+}
+
+/* Иконки */
+.like-icon, .dislike-icon {
+    font-size: 18px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Расположение кнопок */
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}

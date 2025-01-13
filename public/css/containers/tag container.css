@@ -1,0 +1,64 @@
+@import '../vars.css';
+.tag-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap; /* Позволяет тегам переноситься на новую строку */
+    gap: 10px; /* Расстояние между тегами */
+    /* max-width: 500px; */
+    /* width: 100%; */
+    position: relative; /* Для корректной работы абсолютного позиционирования */
+}
+
+.tag {
+    background-color: #1e1e1e40; /* Цвет фона тега */
+    border-radius: 3px;
+    padding-left: 5px; /* Отступ внутри тега */
+    padding-right:5px;
+    display: flex;
+    align-items: center; /* Центрируем содержимое по вертикали */
+}
+
+.close {
+    margin-left: 5px; /* Отступ между текстом тега и кнопкой закрытия */
+    cursor: pointer; /* Указатель при наведении на кнопку закрытия */
+    color: #ff0000; /* Цвет кнопки закрытия */
+}
+
+/* Стили для поля ввода типа search */
+.tag-input {
+    background-color: transparent;
+    border: 1px solid #ffffffcc; /* Граница поля ввода */
+    border-radius: 3px; /* Скругленные углы */
+    padding: 5px 10px; /* Отступ внутри поля ввода */
+    outline: none; /* Убираем обводку при фокусе */
+    /*flex-grow: 1; /* Позволяет полю ввода занимать оставшееся пространство */
+}
+
+.tag-input::placeholder {
+    color: #ffffff99; /* Цвет текста плейсхолдера */
+}
+
+.tag-dropdown {
+    color:var(--text-color);
+    position: absolute; /* Абсолютное позиционирование */
+    top: initial; /* Располагаем ниже поля ввода */
+    left: initial; /* Привязываем к левому краю контейнера */
+    width: initial; /* Ширина равна ширине поля ввода */
+    max-height: 150px; /* Ограничение высоты */
+    overflow-y: auto; /* Прокрутка при переполнении */
+    border: 1px solid #000000; /* Граница */
+    background-color: var(--main-color); /* Фон */
+    z-index: 1000; /* Поверх остальных элементов */
+    display: none; /* Изначально скрыт */
+}
+
+.tag-dropdown div {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.tag-dropdown div:hover {
+    background-color: var(--shadow-color);
+}

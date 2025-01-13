@@ -1,0 +1,25 @@
+.drop-area {
+    /* width: 300px;
+    height: 300px; */
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    background-color: white;
+    overflow: hidden;
+}
+
+.drop-area.hover {
+    border-color: #0056b3;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 100%;
+    display: none; /* Initially hidden */
+    border: 2px solid #6c829a;
+    pointer-events: none;
+}

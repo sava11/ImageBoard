@@ -1,0 +1,14 @@
+:root {
+    --main-color-h: 250;
+    --main-color-s: 60%;
+    --main-color-l: 40%;
+    --main-color: hsl(var(--main-color-h), var(--main-color-s), var(--main-color-l));
+    --background-color: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) + 10%));
+    --panel-background-color: hsl(var(--main-color-h), calc(var(--main-color-s) + 5%), calc(var(--main-color-l) - 5%));
+    --accent-color: hsl(var(--main-color-h), calc(var(--main-color-s) + 10%), calc(var(--main-color-l) + 20%));
+    --text-color: hsl(var(--main-color-h), 100%, 100%);
+    --header-height: 60px;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --margin-test: 10px;
+}

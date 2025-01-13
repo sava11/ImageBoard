@@ -1,0 +1,38 @@
+{
+  "name": "imageboard",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sava11/ImageBoard.git"
+  },
+  "keywords": [
+    "mvs",
+    "site",
+    "frontend",
+    "backend"
+  ],
+  "author": "sava",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sava11/ImageBoard/issues"
+  },
+  "homepage": "https://github.com/sava11/ImageBoard#readme",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-session-knex": "^5.0.0",
+    "cookie-parser": "^1.4.7",
+    "d3": "^7.9.0",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "got": "^14.4.5",
+    "hbs": "^4.2.0",
+    "knex": "^3.1.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.5"
+  }
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{documentName}}</title>
+    <link type="image/favicon" rel="shortcut icon" href="/imgs/ori_ico1.svg">
+    <link rel="stylesheet" href="/css/containers/card container.css" type="text/css" />
+    <link rel="stylesheet" href="/css/test.css" type="text/css" />
+</head>
+
+<body>
+    <div class="header">
+        <a class="logo" href="/">
+            <img src="/imgs/ori_ico1.svg" alt="Logo">
+            <span>artX</span>
+        </a>
+        <div class="user">
+            <a href="/user/login">
+                <span>{{userName}}</span>
+            </a>
+            {{#if isAuthenticated}}
+            <button class="menu-button">
+                <img src="/imgs/settings.svg" width="24px">
+            </button>
+            <div class="dropdown-menu hidden">
+                <a href="/user/settings">
+                    <div class="menu-item"><span>настройки</span></div>
+                </a>
+                <a href="/post/upload">
+                    <div class="menu-item"><span>загрузить</span></div>
+                </a>
+                <button id="user-exit" class="menu-item">выйти</button>
+            </div>
+            <script src="/js/elements/header.js"></script>
+            {{/if}}
+        </div>
+    </div>
+
+    <div class="content">
+        <!--<div><a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
+                title="" border="0">
+                <img id="advertisement-image-top" src="" alt="Advertisement"></a>
+            <script src="/js/get-random-adv.js"></script>
+        </div>-->
+        Имя пользователя: {{user.login}}
+        {{!-- <div class="flex-container">
+            <div class="flex-item">Имя пользователя: {{user.login}}</div>
+        </div> --}}
+        <div id="card-container" class="card-container">
+            {{#if displayUpload}}
+            <a class="card-item" href="/post/upload">
+                <div class="thumbnail">
+                    <img src="/imgs/ori_ico1.svg" />
+                </div>
+                <div class="controls">
+                    <p class="likes"></p>новая работа
+                    <p class="dislikes"></p>
+                </div>
+            </a>
+            {{/if}}
+        </div>
+    </div>
+    <script>
+        fetch('/image/from-user/{{ user.id }}')
+            .then(response => response.json())
+            .then(data => {
+                //style="object-position: -${item.cut_pos_x}px ${item.cut_pos_y}px;" />
+                const container = document.getElementById("card-container");
+                data.images.forEach(item => {
+                    const card = `
+                    <a class="card-item"` + (item.status !== 2 ? `style="border: 2px dashed red;"` : ``) + ` href="/post/${item.id}">
+                    <div class="thumbnail">
+                        <img src="/uploads/${item.id}.${item.ext}"/>
+                    </div>
+                    <div class="controls">`+ (item.status !== 1 ? `<p class="likes">${item.likes}</p>
+                        <p class="dislikes">${item.dislikes}</p>` : `<p class="likes"></p>черновик
+                        <p class="dislikes"></p>`) + `
+                    </div>
+                    </a>`;
+                    container.innerHTML += card;
+                });
+            })
+            .catch(err => console.error("Ошибка загрузки изображений:", err));
+    </script>
+
+</body>
+
+</html>

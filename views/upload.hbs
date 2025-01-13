@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка изображения</title>
+    <link rel="stylesheet" href="/css/elements/dad.css" type="text/css" />
+    <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
+    <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
+</head>
+
+<body>
+    <h1>Загрузка изображения <button id="uploadBtn">сохранить</button> <button id="releaseBtn">опубликовать</button>
+    </h1>
+    <div class="flex-container">
+        <div class="flex-item">
+            <div class="drop-area" style="width:500px; height:300px;" id="drop-area">
+                <p>Перетащите изображение сюда или нажмите для выбора</p>
+                <img id="image-preview" class="image-preview" alt="Предпросмотр изображения">
+            </div>
+            <input type="file" id="file-input" accept="image/*" style="display:none;">
+            <label for="description">Описание:</label><br>
+            <textarea name="description" id="description" rows="4" cols="35" style="resize: vertical;"></textarea><br>
+        </div>
+        <div class="flex-item">
+            <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
+                oninput="searchTags(event)" />
+            <div id="tag-dropdown" class="tag-dropdown"></div>
+            <div id="tag-list" class="tag-container"></div>
+        </div>
+    </div>
+    <script src="/js/elements/dad.js"></script>
+    <script>
+        let selectedTags = [];
+        async function searchTags(event) {
+            const query = event.target.value.trim();
+            const dropdown = document.getElementById("tag-dropdown");
+
+            if (!query) {
+                dropdown.style.display = "none";
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            const response = await fetch(`/image/tags/search?q=${query}`);
+            const results = await response.json();
+
+            if (results.length === 0) {
+                dropdown.style.display = "none";
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            dropdown.style.display = "block";
+            dropdown.innerHTML = results
+                .map(tag => `<div onclick="addTag('${tag.id}','${tag.name}')">${tag.name}</div>`)
+                .join('');
+        }
+
+        function addTag(tagId, tagName) {
+            if (selectedTags.includes(tagName)) return;
+
+            selectedTags.push(tagId);
+
+            const tagList = document.getElementById("tag-list");
+            const newTag = document.createElement("div");
+            newTag.className = "tag";
+            newTag.id = `tag-id-${tagId}`;
+            newTag.innerHTML = `${tagName} <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
+            tagList.appendChild(newTag);
+
+            document.getElementById("tag-dropdown").style.display = "none";
+            document.getElementById("tag-input").value = '';
+        }
+
+        function removeTag(tagId) {
+            selectedTags = selectedTags.filter(tag => tag !== tagId);
+
+            const tagList = document.getElementById("tag-list");
+            const tagDivs = tagList.getElementsByClassName("tag");
+
+            for (const tag of tagDivs) {
+                if (tag.id.startsWith(tagId)) {
+                    tagList.removeChild(tag);
+                    break;
+                }
+            }
+        }
+
+        document.getElementById("uploadBtn").addEventListener("click", () => saveImage(1)); // Черновик
+        document.getElementById("releaseBtn").addEventListener("click", () => saveImage(2)); // Опубликовать
+
+        async function saveImage(status) {
+            const formData = new FormData();
+            formData.append("image", uploadedFile);
+            formData.append("description", document.getElementById("description").value);
+            formData.append("tags", JSON.stringify(selectedTags));
+            formData.append("status", status);
+            try {
+                const response = await fetch("/image/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await response.json();
+                alert(data.message);
+                window.location.replace("/post/{{data.id}}")
+            } catch (err) {
+                console.log(err)
+                alert("Ошибка при сохранении.");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

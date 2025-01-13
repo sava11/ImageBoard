@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="image/favicon" rel="shortcut icon" href="/imgs/ori_ico1.svg">
+  <link rel="stylesheet" href="/css/test.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/card container.css" type="text/css" />
+  <title>{{documentName}}</title>
+</head>
+
+<body>
+  <div class="header">
+    <a class="logo" href="/">
+      <img src="/imgs/ori_ico1.svg" alt="Logo">
+      <span>artX</span>
+    </a>
+    <div class="flow-container">
+      <a href="/" style="text-decoration: none; color:white;" class="flow-item">поиск</a>
+      <a class="flow-item">подписки</a>
+    </div>
+    <div class="user">
+      <a href="/user/login">
+        <span>{{userName}}</span>
+      </a>
+      {{#if isAuthenticated}}
+      <button class="menu-button">
+        <img src="/imgs/settings.svg" width="24px">
+      </button>
+      <div class="dropdown-menu hidden">
+        <a href="/user/settings">
+          <div class="menu-item"><span>настройки</span></div>
+        </a>
+        <a href="/post/upload">
+          <div class="menu-item"><span>загрузить</span></div>
+        </a>
+        <button id="user-exit" class="menu-item">выйти</button>
+      </div>
+      <script src="/js/elements/header.js"></script>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="content">
+      <div class="search_container">
+          <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
+            oninput="searchTags(event)"/><div id="tag-dropdown" class="tag-dropdown"></div>
+          <button class="clear-search-tags">X</button>
+        <div id="tag-list" class="tag-container" style="border:none;">
+        </div>
+      </div>
+      <!--<div><a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
+          title="" border="0">
+          <img id="advertisement-image-top" src="" alt="Advertisement"></a>
+        <script src="/js/get-random-adv.js"></script>
+      </div>-->
+      {{!-- {{> (lookup . "pageContent") }} --}}
+      <div id="item-container" class="card-container"></div>
+      <script src="js/get-simple-image-data.js"></script>
+    </div>
+  </div>
+  <script>
+    const tagSearcher = document.querySelector('.tag-input');
+    const tagDropDawnMenu = document.querySelector('.tag-dropdown');
+
+    // Закрыть меню при клике вне его
+    document.addEventListener('click', (event) => {
+        if (!tagSearcher.contains(event.target) && !tagDropDawnMenu.contains(event.target)) {
+            tagDropDawnMenu.style.display='none';
+            tagSearcher.value='';
+        }
+    });
+    let selectedTags = [];
+    async function searchTags(event) {
+      const query = event.target.value.trim();
+      const dropdown = document.getElementById("tag-dropdown");
+      
+
+
+      if (!query) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = '';
+        return;
+      }
+
+      const response = await fetch(`/image/tags/search?q=${query}`);
+      const results = await response.json();
+
+      if (results.length === 0) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = '';
+        return;
+      }
+
+      dropdown.style.display = "block";
+      dropdown.innerHTML = results
+        .map(tag => `<div onclick="addTag('${tag.id}','${tag.name}')">${tag.name}</div>`)
+        .join('');
+    }
+
+    function addTag(tagId, tagName) {
+      if (selectedTags.includes(tagId)) return;
+
+      selectedTags.push(tagId);
+
+      const tagList = document.getElementById("tag-list");
+      const newTag = document.createElement("div");
+      newTag.className = "tag";
+      newTag.id = `tag-id-${tagId}`;
+      newTag.innerHTML = `${tagName} <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
+      tagList.appendChild(newTag);
+
+      document.getElementById("tag-dropdown").style.display = "none";
+      document.getElementById("tag-input").value = '';
+    }
+
+    function removeTag(tagId) {
+      selectedTags = selectedTags.filter(tag => tag !== tagId);
+
+      const tagList = document.getElementById("tag-list");
+      const tagDivs = tagList.getElementsByClassName("tag");
+
+      for (const tag of tagDivs) {
+        if (tag.id.startsWith(`tag-id-${tagId}`)) {
+          tagList.removeChild(tag);
+          break;
+        }
+      }
+    }
+    function removeTags() {
+      selectedTags=[];
+
+      const tagList = document.getElementById("tag-list");
+      const tagDivs = tagList.getElementsByClassName("tag");
+
+      for (const tag of tagDivs) {
+        tagList.removeChild(tag);
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mainer.css" type="text/css"/>
+    <link rel="stylesheet" href="css/container.css" type="text/css"/>
+    <title>{{documentName}}</title>
+    <section class="nav-1">
+    <nav>
+        <div class="logo">
+            <a href="/"></a>
+        </div>
+        <a class="item" align="left" href="/">
+        <img src="/imgs/ori_ico1.svg" alt="Логотип" />
+        <div class="linktext">главная</div>
+        </a>
+        <a class="item" align="left" href="/about">
+        <div class="linktext">о проекте</div>
+        </a>
+        <a class="item" align="right" href="/user">
+        <div class="linktext">{{userName}}</div>
+        </a>
+    </nav>
+    </section>
+</head>
+    {{> (lookup . "pageContent") }}
+</html>

@@ -1,0 +1,57 @@
+/* Основные стили */
+.h_container {
+    display: flex;
+    justify-content: flex-start; /* По умолчанию выравнивание слева */
+    align-items: center;
+    width: 100%;
+  }
+  
+  .h_container[item_align="center"] {
+    justify-content: center;
+  }
+  
+  .h_container[item_align="right"] {
+    justify-content: flex-end;
+  }
+  
+  .item {
+    position:relative;
+    display: inline-block;
+    align-items: center;
+    justify-content: flex-start; /* По умолчанию содержимое элемента слева */
+    flex-grow: 0; /* По умолчанию не растягивается */
+    padding: 0 10px;
+    height: 100%;
+  }
+  
+  .item[expand="true"] {
+    flex-grow: 1; /* Растягивается на доступное пространство */
+  }
+  
+  .item[align="center"] {
+    justify-content: center;
+  }
+  
+  .item[align="right"] {
+    justify-content: flex-end;
+  }
+  
+  /* Пример оформления текста в элементе */
+  .linktext {
+    font-size: 1em;
+    color: var(--linktext-color);
+    text-align: center;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .h_container {
+      flex-direction: column;
+    }
+  
+    .item {
+      width: 100%;
+      justify-content: center; /* Центрирование на мобильных устройствах */
+    }
+  }
+  

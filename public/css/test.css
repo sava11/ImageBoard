@@ -1,0 +1,139 @@
+/* Основные стили */
+@import 'vars.css';
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Верхняя панель */
+.header {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; 
+  height: var(--header-height);
+  padding: 0 20px;
+  background-color: var(--main-color);
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.header .logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.header .logo img {
+  height: calc(var(--header-height) * 0.8);
+  margin-right: 10px;
+}
+
+.adv-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 4px solid gray;
+  margin-bottom: var(--margin-test);
+  justify-self: center;
+}
+.adv-image img {
+  width: 100%;
+  height: 80px;
+}
+
+.header .user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
+.header .user a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.menu-button {
+  margin-left: 10px;
+  background-color: #3498db00;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: var(--header-height);
+  right: 0%;
+  background-color: var(--main-color);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+  width: 150px;
+  z-index: 100;
+}
+
+.hidden {
+  display: none;
+}
+
+.menu-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--text-color);
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: var(--main-color);
+  width: 100%;
+}
+
+.menu-item:hover {
+  background-color: var(--background-color);
+}
+
+.page-container {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+.search_container{
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  align-content: center;
+}
