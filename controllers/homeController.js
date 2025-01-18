@@ -7,3 +7,13 @@ exports.index = (req, res) => {
         isAuthenticated,
     });
 };
+
+exports.about = (req, res) => {
+    const userName = req.session.user ? req.session.user.login : "Войти";
+    const isAuthenticated = !!req.session.user; // true, если пользователь вошёл
+    res.render("about", {
+        userName,
+        isAuthenticated,
+        userName: userName,
+    });
+};

@@ -1,66 +1,14 @@
-const multer = require("multer");
-const path = require("path");
-const crypto = require("crypto");
-const fs = require("fs");
 const pool = require("../dataBase/db");
-// Папки для хранения изображений
+const path = require("path");
+const fs = require("fs");
 const uploadFolder = path.join(__dirname, "../imgs/uploads");
-if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
-
-// Конфигурация Multer для обычных изображений
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadFolder),
-    filename: (req, file, cb) => {
-        const uniqueName = crypto.randomBytes(16).toString("hex") + path.extname(file.originalname);
-        cb(null, uniqueName);
-    },
-}); const upload = multer({ storage });
-
-exports.uploadImage = upload.single("image");
-
-exports.saveImageData = async (req, res) => {
-    const { description, tags, status } = req.body;
-    if (!req.file || !req.session.user) {
-        return res.status(400).json({ message: "нет изображения." });
-    }
-
-    const userId = req.session.user.id;
-    const imageId = path.basename(req.file.filename).split(".")[0];
-    const today = new Date().toISOString().split("T")[0];
-
-    try {
-        // Сохранение изображения
-        await pool.promise().execute(
-            `INSERT INTO images (id, user_id, date, ext, status, \`desc\`) VALUES (?, ?, ?, ?, ?, ?)`,
-            [imageId, userId, today, path.extname(req.file.filename).slice(1), status, description || null]
-        );
-
-        // Сохранение тегов
-        if (tags && tags.length > 0) {
-            const tagIds = JSON.parse(tags);
-            for (const tagId of tagIds) {
-                await pool.promise().execute(
-                    `INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES (?, ?)`,
-                    [imageId, tagId]
-                );
-            }
-        }
-        res.status(200).json({ message: "изображение сохранено.", id:imageId });
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ message: "Ошибка сохранения изображения." });
-    }
-};
-
 exports.getImageById = async (req, res) => {
     const { id } = req.params;
     const [image_data] = await pool.promise().execute(`
         SELECT ext FROM images WHERE id=\"${id}\";`);
     if (Object.keys(image_data).length > 0) {
         const ext = image_data[0].ext
-
         const filePath = path.join(uploadFolder, id + "." + ext);
-
         if (fs.existsSync(filePath)) {
             res.sendFile(filePath);
         } else {
@@ -92,7 +40,7 @@ exports.getSimpleUserImages = async (req, res) => {
 
         const [images1] = await pool.promise().execute(`
         call getAllImagesIfOwner(${id},${(!!req.session.user ? req.session.user.id : 0)});`);
-        const images=images1[0];
+        const images = images1[0];
         res.status(200).json({ images });
     } catch (err) {
         console.error("Ошибка при получении изображений:", err);

@@ -1,4 +1,4 @@
-@import '../vars.css';
+/* @import '../vars.css'; */
 .tag-container {
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -6,9 +6,10 @@
     display: flex;
     flex-wrap: wrap; /* Позволяет тегам переноситься на новую строку */
     gap: 10px; /* Расстояние между тегами */
+    flex:1;
     /* max-width: 500px; */
     /* width: 100%; */
-    position: relative; /* Для корректной работы абсолютного позиционирования */
+    /*position:relative; /* Для корректной работы абсолютного позиционирования */
 }
 
 .tag {
@@ -41,7 +42,7 @@
 }
 
 .tag-dropdown {
-    color:var(--text-color);
+    color:var(--main-text-color);
     position: absolute; /* Абсолютное позиционирование */
     top: initial; /* Располагаем ниже поля ввода */
     left: initial; /* Привязываем к левому краю контейнера */

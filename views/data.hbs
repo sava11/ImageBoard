@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link type="image/favicon" rel="shortcut icon" href="/imgs/ori_ico1.svg">
+    <link rel="stylesheet" href="/css/vars.css" type="text/css" />
   <link rel="stylesheet" href="/css/test.css" type="text/css" />
   <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
   <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
@@ -13,15 +14,16 @@
 </head>
 
 <body>
+  <div class="page-container">
   <div class="header">
     <a class="logo" href="/">
       <img src="/imgs/ori_ico1.svg" alt="Logo">
       <span>artX</span>
     </a>
-    <div class="flow-container">
+    {{!-- <div class="flow-container">
       <a href="/" style="text-decoration: none; color:white;" class="flow-item">поиск</a>
       <a class="flow-item">подписки</a>
-    </div>
+    </div> --}}
     <div class="user">
       <a href="/user/login">
         <span>{{userName}}</span>
@@ -47,12 +49,14 @@
   <div class="main-content">
     <div class="content">
       <div class="search_container">
-          <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
-            oninput="searchTags(event)"/><div id="tag-dropdown" class="tag-dropdown"></div>
-          <button class="clear-search-tags">X</button>
+        <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
+          oninput="searchTags(event)" />
+        <div id="tag-dropdown" class="tag-dropdown"></div>
+        <button class="clear-search-tags">X</button>
         <div id="tag-list" class="tag-container" style="border:none;">
         </div>
       </div>
+      
       <!--<div><a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
           title="" border="0">
           <img id="advertisement-image-top" src="" alt="Advertisement"></a>
@@ -60,8 +64,23 @@
       </div>-->
       {{!-- {{> (lookup . "pageContent") }} --}}
       <div id="item-container" class="card-container"></div>
-      <script src="js/get-simple-image-data.js"></script>
+      <script src="/js/get-simple-image-data.js"></script>
     </div>
+  </div>
+  <footer class="footer">
+    <div class="footer-item">
+      <img src="/imgs/author-icon.svg" alt="Автор" class="footer-icon">
+      <span>Емельяненко Савелий</span>
+    </div>
+    <div class="footer-item">
+      <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
+      <a href="mailto:ivan.ivanov@example.com">Sovergon15@gmail.com</a>
+    </div>
+    <div class="footer-item">
+      <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
+      <a href="/about">О проекте</a>
+    </div>
+  </footer>
   </div>
   <script>
     const tagSearcher = document.querySelector('.tag-input');
@@ -69,16 +88,16 @@
 
     // Закрыть меню при клике вне его
     document.addEventListener('click', (event) => {
-        if (!tagSearcher.contains(event.target) && !tagDropDawnMenu.contains(event.target)) {
-            tagDropDawnMenu.style.display='none';
-            tagSearcher.value='';
-        }
+      if (!tagSearcher.contains(event.target) && !tagDropDawnMenu.contains(event.target)) {
+        tagDropDawnMenu.style.display = 'none';
+        tagSearcher.value = '';
+      }
     });
     let selectedTags = [];
     async function searchTags(event) {
       const query = event.target.value.trim();
       const dropdown = document.getElementById("tag-dropdown");
-      
+
 
 
       if (!query) {
@@ -132,7 +151,7 @@
       }
     }
     function removeTags() {
-      selectedTags=[];
+      selectedTags = [];
 
       const tagList = document.getElementById("tag-list");
       const tagDivs = tagList.getElementsByClassName("tag");

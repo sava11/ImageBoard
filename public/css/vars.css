@@ -6,9 +6,21 @@
     --background-color: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) + 10%));
     --panel-background-color: hsl(var(--main-color-h), calc(var(--main-color-s) + 5%), calc(var(--main-color-l) - 5%));
     --accent-color: hsl(var(--main-color-h), calc(var(--main-color-s) + 10%), calc(var(--main-color-l) + 20%));
-    --text-color: hsl(var(--main-color-h), 100%, 100%);
-    --header-height: 60px;
+    --main-text-color: hsl(var(--main-color-h), 100%, 100%);
+    --header-height: 4rem;
     --shadow-color: rgba(0, 0, 0, 0.1);
-    --border-radius: 8px;
-    --margin-test: 10px;
+    --border-radius: 0.5rem;
+    --margin-test: 0.625rem;
+    --container-gap:1rem;
+    --card-width: 14rem;
+    --card-height: auto;
+    --card-padding: 0.5rem;
+    --card-border-radius: 0.625rem;
+    --thumbnail-border-radius: 6px;
+    --hover-scale: 1.05;
+    --thumbnail-max-height: 16rem;
+    --thumbnail-max-width: 100%;
+    --like-color: #ff1100;
+    --dislike-color: #000000;
+    --hover-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
 }

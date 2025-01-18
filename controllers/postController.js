@@ -1,8 +1,64 @@
-const { Types } = require("mysql2");
 const pool = require("../dataBase/db.js");
+const multer = require("multer");
+const path = require("path");
+const crypto = require("crypto");
+const fs = require("fs");
+// Папки для хранения изображений
+const uploadFolder = path.join(__dirname, "../imgs/uploads");
+if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
+
+// Конфигурация Multer для обычных изображений
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadFolder),
+    filename: (req, file, cb) => {
+        const uniqueName = crypto.randomBytes(16).toString("hex") + path.extname(file.originalname);
+        cb(null, uniqueName);
+    },
+}); const upload = multer({ storage });
+
+exports.uploadImage = upload.single("image");
+
+exports.savePostData = async (req, res) => {
+    const { description, tags, status } = req.body;
+    if (!req.file || !req.session.user) {
+        return res.status(400).json({ message: "нет изображения." });
+    }
+
+    const userId = req.session.user.id;
+    const imageId = path.basename(req.file.filename).split(".")[0];
+    const today = new Date().toISOString().split("T")[0];
+
+    try {
+        // Сохранение изображения
+        await pool.promise().execute(
+            `INSERT INTO images (id, user_id, date, ext, status, \`desc\`) VALUES (?, ?, ?, ?, ?, ?)`,
+            [imageId, userId, today, path.extname(req.file.filename).slice(1), status, description || null]
+        );
+
+        // Сохранение тегов
+        if (tags && tags.length > 0) {
+            const tagIds = JSON.parse(tags);
+            for (const tagId of tagIds) {
+                await pool.promise().execute(
+                    `INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES (?, ?)`,
+                    [imageId, tagId]
+                );
+            }
+        }
+        res.status(200).json({ message: "изображение сохранено.", id:imageId });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: "Ошибка сохранения изображения." });
+    }
+};
+
 exports.uploadPost = (req, res) => {
-    res.render("upload"); // Отображаем форму загрузки
+    res.render("upload",{
+        userName : req.session.user ? req.session.user.login : "Войти",
+        isAuthenticated : !!req.session.user, // true, если пользователь вошёл
+    }); // Отображаем форму загрузки
 }
+
 exports.getPostById = async (req, res) => {
     const { id } = req.params;
     try {
@@ -108,13 +164,36 @@ exports.getPostById = async (req, res) => {
 };
 
 exports.deletePostById = (req, res) => {
-    // pool.query("UPDATE users SET login = ?, email = ? WHERE id = ?", [login, email, userId], (err) => {
-    //     if (err) return res.status(500).send("Ошибка редактирования профиля");
-    //     req.session.user.login = login;
-    //     req.session.user.email = email;
-    //     res.redirect(`/user/${userId}`);
-    // });
-}
+    const { id } = req.params;
+
+    // Получаем информацию о посте из базы данных
+    pool.query(`SELECT ext FROM images WHERE id = ?`, [id], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(500).json({ message: "Пост не найден или ошибка базы данных" });
+        }
+
+        const fileExtension = results[0].ext;
+        const filePath = path.join(__dirname, "../imgs/uploads", `${id}.${fileExtension}`);
+
+        // Удаляем файл из хранилища
+        fs.unlink(filePath, (unlinkErr) => {
+            if (unlinkErr) {
+                console.error(`Ошибка удаления файла: ${unlinkErr.message}`);
+                return res.status(500).json({ message: "Ошибка удаления файла" });
+            }
+
+            // Удаляем запись из базы данных
+            pool.query(`DELETE FROM images WHERE id = ?`, [id], (deleteErr) => {
+                if (deleteErr) {
+                    console.error(`Ошибка удаления записи: ${deleteErr.message}`);
+                    return res.status(500).json({ message: "Ошибка удаления записи из базы данных" });
+                }
+
+                res.status(200).json({ message: "Пост и файл успешно удалены" });
+            });
+        });
+    });
+};
 
 exports.editPostById = (req, res) => {
 

@@ -5,30 +5,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Загрузка изображения</title>
+    <link rel="stylesheet" href="/css/vars.css" type="text/css" />
+    <link rel="stylesheet" href="/css/test.css" type="text/css" />
     <link rel="stylesheet" href="/css/elements/dad.css" type="text/css" />
     <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
     <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
 </head>
 
 <body>
-    <h1>Загрузка изображения <button id="uploadBtn">сохранить</button> <button id="releaseBtn">опубликовать</button>
-    </h1>
-    <div class="flex-container">
-        <div class="flex-item">
-            <div class="drop-area" style="width:500px; height:300px;" id="drop-area">
-                <p>Перетащите изображение сюда или нажмите для выбора</p>
-                <img id="image-preview" class="image-preview" alt="Предпросмотр изображения">
+    <div class="page-container">
+        <div class="header">
+            <a class="logo" href="/">
+                <img src="/imgs/ori_ico1.svg" alt="Logo">
+                <span>artX</span>
+            </a>
+            <div class="user">
+                <a href="/user/login">
+                    <span>{{userName}}</span>
+                </a>
+                {{#if isAuthenticated}}
+                <button class="menu-button">
+                    <img src="/imgs/settings.svg" width="24px">
+                </button>
+                <div class="dropdown-menu hidden">
+                    <a href="/user/settings">
+                        <div class="menu-item"><span>настройки</span></div>
+                    </a>
+                    <a href="/post/upload">
+                        <div class="menu-item"><span>загрузить</span></div>
+                    </a>
+                    <button id="user-exit" class="menu-item">выйти</button>
+                </div>
+                <script src="/js/elements/header.js"></script>
+                {{/if}}
             </div>
-            <input type="file" id="file-input" accept="image/*" style="display:none;">
-            <label for="description">Описание:</label><br>
-            <textarea name="description" id="description" rows="4" cols="35" style="resize: vertical;"></textarea><br>
         </div>
-        <div class="flex-item">
-            <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
-                oninput="searchTags(event)" />
-            <div id="tag-dropdown" class="tag-dropdown"></div>
-            <div id="tag-list" class="tag-container"></div>
+        <div class="content">
+            <h1>Загрузка изображения <button id="uploadBtn">сохранить</button> <button
+                    id="releaseBtn">опубликовать</button></h1>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <div class="drop-area" style="width:500px; height:300px;" id="drop-area">
+                        <p>Перетащите изображение сюда или нажмите для выбора</p>
+                        <img id="image-preview" class="image-preview" alt="Предпросмотр изображения">
+                    </div>
+                    <input type="file" id="file-input" accept="image/*" style="display:none;">
+                    <label for="description">Описание:</label><br>
+                    <textarea name="description" id="description" rows="4" cols="60"
+                        style="resize: vertical;"></textarea><br>
+                </div>
+                <div class="flex-item">
+                    <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
+                        oninput="searchTags(event)" />
+                    <div id="tag-dropdown" class="tag-dropdown"></div>
+                    <div id="tag-list" class="tag-container"></div>
+                </div>
+            </div>
         </div>
+        <footer class="footer">
+            <div class="footer-item">
+                <img src="/imgs/author-icon.svg" alt="Автор" class="footer-icon">
+                <span>Емельяненко Савелий</span>
+            </div>
+            <div class="footer-item">
+                <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
+                <a href="mailto:ivan.ivanov@example.com">Sovergon15@gmail.com</a>
+            </div>
+            <div class="footer-item">
+                <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
+                <a href="/about">О проекте</a>
+            </div>
+        </footer>
     </div>
     <script src="/js/elements/dad.js"></script>
     <script>
@@ -98,13 +145,13 @@
             formData.append("tags", JSON.stringify(selectedTags));
             formData.append("status", status);
             try {
-                const response = await fetch("/image/upload", {
+                const response = await fetch("/post/upload", {
                     method: "POST",
                     body: formData,
                 });
                 const data = await response.json();
-                alert(data.message);
-                window.location.replace("/post/{{data.id}}")
+                console.log(data.id);
+                window.location.replace(`/post/${data.id}`)
             } catch (err) {
                 console.log(err)
                 alert("Ошибка при сохранении.");

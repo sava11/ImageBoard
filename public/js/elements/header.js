@@ -1,5 +1,6 @@
 // Кнопка выхода
 document.getElementById("user-exit").addEventListener("click", async () => {
+    if (confirm("вы хотите выйти?")){
     try {
         const response = await fetch("/user/logout", {
             method: "POST",
@@ -7,7 +8,7 @@ document.getElementById("user-exit").addEventListener("click", async () => {
         });
 
         if (response.ok) {
-            alert("Вы успешно вышли из системы.");
+            // alert("Вы успешно вышли из системы.");
             window.location.href = "/"; // Перенаправление на главную
         } else {
             const error = await response.json();
@@ -16,7 +17,7 @@ document.getElementById("user-exit").addEventListener("click", async () => {
     } catch (err) {
         console.error("Ошибка при выходе:", err);
         alert("Произошла ошибка при выходе.");
-    }
+    }}
 });
 const menuButton = document.querySelector('.menu-button');
 const dropdownMenu = document.querySelector('.dropdown-menu');

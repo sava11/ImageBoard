@@ -4,13 +4,21 @@ const userController = require("../controllers/userController.js");
 const router = express.Router();
 
 router.post("/vote",
-    userController.isAuthenticated, 
+    userController.isAuthenticated,
     postController.vote
 );
-router.get("/upload", 
-    userController.isAuthenticated, 
+router.get("/upload",
+    userController.isAuthenticated,
     postController.uploadPost
 );
+
+router.post(
+    "/upload",
+    userController.isAuthenticated, // Проверка авторизации
+    postController.uploadImage,
+    postController.savePostData
+);
+
 router.get("/:id",
     postController.getPostById
 );

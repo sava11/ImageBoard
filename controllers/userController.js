@@ -69,7 +69,7 @@ exports.user = (req, res) => {
                 documentName: "Профиль " + user.login,
                 user: user,
                 userName: userName,
-                displayUpload:authenticated ? user.id==req.session.user.id : false,
+                // displayUpload:authenticated ? user.id==req.session.user.id : false,
                 isAuthenticated: authenticated,
             });
 

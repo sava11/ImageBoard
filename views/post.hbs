@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <link type="image/favicon" rel="shortcut icon" href="/imgs/ori_ico1.svg">
   {{#if isDraft}}
   <title>черновик {{documentId}}</title>
@@ -14,6 +14,7 @@
   {{/if}}
   <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
   <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
+    <link rel="stylesheet" href="/css/vars.css" type="text/css" />
   <link rel="stylesheet" href="/css/test.css" type="text/css" />
   {{#if isOwner}}
   <link rel="stylesheet" href="/css/elements/owner-dis-like.css" type="text/css" />
@@ -34,165 +35,198 @@
 </head>
 
 <body {{#if voted}}onload="set_actions()" {{/if}}>
-  <div class="header">
-    <a class="logo" href="/">
-      <img src="/imgs/ori_ico1.svg" alt="Logo">
-      <span>artX</span>
-    </a>
-    <div class="user">
-      <a href="/user/login">
-        <span>{{userName}}</span>
+  <div class="page-container">
+    <div class="header">
+      <a class="logo" href="/">
+        <img src="/imgs/ori_ico1.svg" alt="Logo">
+        <span>artX</span>
       </a>
-      {{#if isAuthenticated}}
-      <button class="menu-button">
-        <img src="/imgs/settings.svg" width="24px">
-      </button>
-      <div class="dropdown-menu hidden">
-        <a href="/user/settings">
-          <div class="menu-item"><span>настройки</span></div>
+      <div class="user">
+        <a href="/user/login">
+          <span>{{userName}}</span>
         </a>
-        <a href="/post/upload">
-          <div class="menu-item"><span>загрузить</span></div>
-        </a>
-        <button id="user-exit" class="menu-item">выйти</button>
+        {{#if isAuthenticated}}
+        <button class="menu-button">
+          <img src="/imgs/settings.svg" width="24px">
+        </button>
+        <div class="dropdown-menu hidden">
+          <a href="/user/settings">
+            <div class="menu-item"><span>настройки</span></div>
+          </a>
+          <a href="/post/upload">
+            <div class="menu-item"><span>загрузить</span></div>
+          </a>
+          <button id="user-exit" class="menu-item">выйти</button>
+        </div>
+        <script src="/js/elements/header.js"></script>
+        {{/if}}
       </div>
-      <script src="/js/elements/header.js"></script>
-      {{/if}}
     </div>
-  </div>
 
-  <div class="content">
-    <!-- Верхняя панель -->
-    <!-- <div>
+    <div class="content">
+      <!-- Верхняя панель -->
+      <!-- <div>
       <a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" target="_blank" title="">
         <img id="advertisement-image-top" src="" alt="Advertisement">
       </a>
       <script src="/js/get-random-adv.js"></script>
     </div> -->
 
-    <div class="flow-container">
-      <div class="flow-item">
-        <img src="/image/{{documentId}}" width="500px" alt="Изображение"><br>
-        <div class="post-actions">
-          <button class="like-button " id="likeButton">
-            <span class="like-icon">👍</span>
-            <span id="likeCount">{{likes}}</span>
-          </button>
-          <button class="dislike-button" id="dislikeButton">
-            <span class="dislike-icon">👎</span>
-            <span id="dislikeCount">{{dislikes}}</span>
-          </button>
-        </div>
-        {{#if isNotOwner}}
-        автор: <a href="/user/{{author_id}}">{{author_name}}</a>
-        <script>
-          const likeButton = document.getElementById("likeButton");
-          const dislikeButton = document.getElementById("dislikeButton");
-
-          if ({{ isAuthenticated }}) {
-            // Добавляем обработчики событий для кнопок
-            likeButton.addEventListener("click", () => handleVote(1));
-            dislikeButton.addEventListener("click", () => handleVote(0));
-
-            // Форматирование числа голосов
-            function formatVotes(votes) {
-              if (votes >= 1000000) {
-                return (votes / 1000000).toFixed(1).replace(/\.0$/, "") + "м";
-              } else if (votes >= 1000) {
-                return (votes / 1000).toFixed(1).replace(/\.0$/, "") + "т";
+      <div class="flow-container">
+        <div class="flow-item">
+          <img src="/image/{{documentId}}" style="width:25vh;" alt="Изображение"><br>
+          <div class="post-actions">
+            <button class="like-button " id="likeButton">
+              <span class="like-icon">👍</span>
+              <span id="likeCount">{{likes}}</span>
+            </button>
+            <button class="dislike-button" id="dislikeButton">
+              <span class="dislike-icon">👎</span>
+              <span id="dislikeCount">{{dislikes}}</span>
+            </button>
+            {{#if isOwner}}
+            <div>
+              <button onclick="editPost()">изменить</button>
+              <button onclick="removePost()">удалить</button>
+            </div>
+            <script>
+              function removePost(){
+                fetch("/post/delete/{{documentId}}")
+                  .then(response => response.json())
+                  .then(data => {
+                    window.location.replace("/user/{{author_id}}")
+                  })
+                  .catch(err => console.error("Ошибка удаления", err));
+                
               }
-              return votes.toString();
-            }
+            </script>
+            {{/if}}
+          </div>
+          {{#if isNotOwner}}
+          автор: <a href="/user/{{author_id}}">{{author_name}}</a>
+          <script>
+            const likeButton = document.getElementById("likeButton");
+            const dislikeButton = document.getElementById("dislikeButton");
 
-            // Функция для отправки голосов
-            async function handleVote(vote) {
-              try {
-                const response = await fetch("/post/vote", {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-type": "application/json; charset=UTF-8",
-                  },
-                  body: JSON.stringify({
-                    post: "{{documentId}}",
-                    vote_type: vote,
-                  }),
-                  credentials: "include",
-                });
+            if ({{ isAuthenticated }}) {
+              // Добавляем обработчики событий для кнопок
+              likeButton.addEventListener("click", () => handleVote(1));
+              dislikeButton.addEventListener("click", () => handleVote(0));
 
-                if (!response.ok) throw new Error("Ошибка при голосовании");
-
-                const data = await response.json();
-
-                // Обновляем интерфейс в зависимости от типа голоса
-                updateVoteUI(vote);
-                console.log(data);
-              } catch (error) {
-                console.error(error);
-                alert("Ошибка при голосовании.");
-              }
-            }
-
-            // Обновление пользовательского интерфейса
-            function updateVoteUI(vote) {
-              const likeCountElement = document.getElementById("likeCount");
-              const dislikeCountElement = document.getElementById("dislikeCount");
-              let likeCount = parseInt(likeCountElement.innerText.replace(/[^\d]/g, ""), 10);
-              let dislikeCount = parseInt(dislikeCountElement.innerText.replace(/[^\d]/g, ""), 10);
-
-              if (vote === 1) {
-                if (!likeButton.classList.contains("active")) {
-                  likeCount += 1;
-                  if (dislikeButton.classList.contains("active")) {
-                    dislikeCount -= 1;
-                  }
-                } else {
-                  likeCount -= 1;
+              // Форматирование числа голосов
+              function formatVotes(votes) {
+                if (votes >= 1000000) {
+                  return (votes / 1000000).toFixed(1).replace(/\.0$/, "") + "м";
+                } else if (votes >= 1000) {
+                  return (votes / 1000).toFixed(1).replace(/\.0$/, "") + "т";
                 }
-                likeButton.classList.toggle("active");
-                dislikeButton.classList.remove("active");
-              } else {
-                if (!dislikeButton.classList.contains("active")) {
-                  dislikeCount += 1;
-                  if (likeButton.classList.contains("active")) {
+                return votes.toString();
+              }
+
+              // Функция для отправки голосов
+              async function handleVote(vote) {
+                try {
+                  const response = await fetch("/post/vote", {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-type": "application/json; charset=UTF-8",
+                    },
+                    body: JSON.stringify({
+                      post: "{{documentId}}",
+                      vote_type: vote,
+                    }),
+                    credentials: "include",
+                  });
+
+                  if (!response.ok) throw new Error("Ошибка при голосовании");
+
+                  const data = await response.json();
+
+                  // Обновляем интерфейс в зависимости от типа голоса
+                  updateVoteUI(vote);
+                  console.log(data);
+                } catch (error) {
+                  console.error(error);
+                  alert("Ошибка при голосовании.");
+                }
+              }
+
+              // Обновление пользовательского интерфейса
+              function updateVoteUI(vote) {
+                const likeCountElement = document.getElementById("likeCount");
+                const dislikeCountElement = document.getElementById("dislikeCount");
+                let likeCount = parseInt(likeCountElement.innerText.replace(/[^\d]/g, ""), 10);
+                let dislikeCount = parseInt(dislikeCountElement.innerText.replace(/[^\d]/g, ""), 10);
+
+                if (vote === 1) {
+                  if (!likeButton.classList.contains("active")) {
+                    likeCount += 1;
+                    if (dislikeButton.classList.contains("active")) {
+                      dislikeCount -= 1;
+                    }
+                  } else {
                     likeCount -= 1;
                   }
+                  likeButton.classList.toggle("active");
+                  dislikeButton.classList.remove("active");
                 } else {
-                  dislikeCount -= 1;
+                  if (!dislikeButton.classList.contains("active")) {
+                    dislikeCount += 1;
+                    if (likeButton.classList.contains("active")) {
+                      likeCount -= 1;
+                    }
+                  } else {
+                    dislikeCount -= 1;
+                  }
+                  dislikeButton.classList.toggle("active");
+                  likeButton.classList.remove("active");
                 }
-                dislikeButton.classList.toggle("active");
-                likeButton.classList.remove("active");
+
+                likeCountElement.innerText = formatVotes(likeCount);
+                dislikeCountElement.innerText = formatVotes(dislikeCount);
               }
-
-              likeCountElement.innerText = formatVotes(likeCount);
-              dislikeCountElement.innerText = formatVotes(dislikeCount);
+            } else {
+              // Если пользователь не аутентифицирован, перенаправляем на страницу входа
+              likeButton.addEventListener("click", () => window.location.replace("/user/login"));
+              dislikeButton.addEventListener("click", () => window.location.replace("/user/login"));
             }
-          } else {
-            // Если пользователь не аутентифицирован, перенаправляем на страницу входа
-            likeButton.addEventListener("click", () => window.location.replace("/user/login"));
-            dislikeButton.addEventListener("click", () => window.location.replace("/user/login"));
-          }
-        </script>
-        {{/if}}
-        <div class="description">
-          <h2>Описание:</h2>
-          {{description}}
+          </script>
+          {{/if}}
+          <div class="description">
+            <h2>Описание:</h2>
+            {{description}}
+          </div>
         </div>
-      </div>
 
-      <div class="flow-item">
-        <div class="tag-container">
-          {{#each tags}}
-          <div id="tag_{{this.id}}" class="tag">{{this.name}}</div>
-          {{/each}}
+        <div class="flow-item">
+          <div class="tag-container">
+            {{#each tags}}
+            <div id="tag_{{this.id}}" class="tag">{{this.name}}</div>
+            {{/each}}
+          </div>
         </div>
       </div>
     </div>
+    <footer class="footer">
+      <div class="footer-item">
+        <img src="/imgs/author-icon.svg" alt="Автор" class="footer-icon">
+        <span>Емельяненко Савелий</span>
+      </div>
+      <div class="footer-item">
+        <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
+        <a href="mailto:ivan.ivanov@example.com">Sovergon15@gmail.com</a>
+      </div>
+      <div class="footer-item">
+        <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
+        <a href="/about">О проекте</a>
+      </div>
+    </footer>
   </div>
   {{#if voted}}
   <script>
     function set_actions() {
-      if ({{ postAction }}== 0) {
+      if ({{postAction}}== 0) {
       dislikeButton.classList.toggle("active");
       likeButton.classList.remove("active");
     }
@@ -203,6 +237,7 @@
     }
   </script>
   {{/if}}
+
 </body>
 
 </html>

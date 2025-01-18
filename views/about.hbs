@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О проекте</title>
+    <link type="image/favicon" rel="shortcut icon" href="/imgs/ori_ico1.svg">
+    <link rel="stylesheet" href="/css/vars.css" type="text/css" />
+    <link rel="stylesheet" href="/css/test.css" type="text/css" />
+</head>
+
+<body>
+    <div class="page-container">
+        <div class="header">
+            <a class="logo" href="/">
+                <img src="/imgs/ori_ico1.svg" alt="Logo">
+                <span>artX</span>
+            </a>
+            <div class="user">
+                <a href="/user/login">
+                    <span>{{userName}}</span>
+                </a>
+                {{#if isAuthenticated}}
+                <button class="menu-button">
+                    <img src="/imgs/settings.svg" width="24px">
+                </button>
+                <div class="dropdown-menu hidden">
+                    <a href="/user/settings">
+                        <div class="menu-item"><span>настройки</span></div>
+                    </a>
+                    <a href="/post/upload">
+                        <div class="menu-item"><span>загрузить</span></div>
+                    </a>
+                    <button id="user-exit" class="menu-item">выйти</button>
+                </div>
+                <script src="/js/elements/header.js"></script>
+                {{/if}}
+            </div>
+        </div>
+        <div class="content">
+
+        </div>
+        <footer class="footer">
+            <div class="footer-item">
+                <img src="/imgs/author-icon.svg" alt="Автор" class="footer-icon">
+                <span>Емельяненко Савелий</span>
+            </div>
+            <div class="footer-item">
+                <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
+                <a href="mailto:ivan.ivanov@example.com">Sovergon15@gmail.com</a>
+            </div>
+            <div class="footer-item">
+                <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
+                <a href="/about">О проекте</a>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
