@@ -19,7 +19,7 @@ body {
   align-items: center;
   justify-content: space-between; 
   height: var(--header-height);
-  padding: 0 20px;
+  padding: 0 var(--padding-test);
   background-color: var(--main-color);
   color: white;
   border-bottom: 2px solid var(--shadow-color);
@@ -130,22 +130,23 @@ body {
 
 .content {
   flex: 1;
-  padding: 20px;
+  padding: var(--padding-test);
   box-sizing: border-box;
   overflow-y: auto;
 }
 .search_container{
-  justify-content: center;
+  padding: var(--padding-test);
+  /* justify-content: center;
   align-items: center;
   justify-items: center;
-  align-content: center;
+  align-content: center; */
 }
 
 .footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  padding: var(--padding-test) 0;
   background-color: var(--main-color);
   color: white;
   border-top: 2px solid var(--shadow-color);
@@ -154,7 +155,7 @@ body {
 .footer-item {
   display: flex;
   align-items: center;
-  margin: 0 20px;
+  margin: 0 var(--padding-test);
   font-size: 1rem;
 }
 

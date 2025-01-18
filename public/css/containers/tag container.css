@@ -1,28 +1,37 @@
 /* @import '../vars.css'; */
 .tag-container {
     border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 1rem;
+    padding: var(--padding-test) 0px;
     display: flex;
     flex-wrap: wrap; /* Позволяет тегам переноситься на новую строку */
     gap: 10px; /* Расстояние между тегами */
     flex:1;
-    /* max-width: 500px; */
+    max-width: 16rem;
     /* width: 100%; */
     /*position:relative; /* Для корректной работы абсолютного позиционирования */
 }
 
 .tag {
     background-color: #1e1e1e40; /* Цвет фона тега */
-    border-radius: 3px;
-    padding-left: 5px; /* Отступ внутри тега */
-    padding-right:5px;
+    border-radius: 1rem;
+    border: white solid 1px ;
+    border-right: 0;
+    /*padding-left: 2px; /* Отступ внутри тега*/
+    padding-left:3px;
     display: flex;
+    gap:0.25rem;
+    
     align-items: center; /* Центрируем содержимое по вертикали */
 }
 
 .close {
-    margin-left: 5px; /* Отступ между текстом тега и кнопкой закрытия */
+
+    padding: 0px 7px;
+    background-color: #1e1e1e40;
+    border-radius: 2rem;
+    border: white solid 1px ;
+    /*margin-left: 5px; /* Отступ между текстом тега и кнопкой закрытия */
     cursor: pointer; /* Указатель при наведении на кнопку закрытия */
     color: #ff0000; /* Цвет кнопки закрытия */
 }
