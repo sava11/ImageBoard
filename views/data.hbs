@@ -49,11 +49,14 @@
     <div class="main-content">
       <div class="search_container">
         <link rel="stylesheet" href="/css/elements/switch.css" type="text/css" />
-        <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
-          oninput="searchTags(event)" />
-        <div id="tag-dropdown" class="tag-dropdown"></div>
-        <button class="clear-search-tags">X</button>
-        <div id="tag-list" class="tag-container" style="border:none;"></div>
+        <div class="tag-container-wrapper" style="position: relative; min-width: 7.75rem; max-width: 25vw;">
+          <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
+            oninput="searchTags(event)" onkeydown="navigateDropdown(event)" />
+          <div id="tag-dropdown" class="tag-dropdown"></div>
+        </div>
+        <div id="tag-list" class="tag-container" style="border: none; min-width: 7.75rem; max-width: 25vw;"></div>
+
+
       </div>
       <div class="content">
 
@@ -83,26 +86,19 @@
     </footer>
   </div>
   <script>
-    const tagSearcher = document.querySelector('.tag-input');
-    const tagDropDawnMenu = document.querySelector('.tag-dropdown');
-
-    // Закрыть меню при клике вне его
-    document.addEventListener('click', (event) => {
-      if (!tagSearcher.contains(event.target) && !tagDropDawnMenu.contains(event.target)) {
-        tagDropDawnMenu.style.display = 'none';
-        tagSearcher.value = '';
-      }
-    });
     let selectedTags = [];
+    let dropdownIndex = -1;
+
     async function searchTags(event) {
       const query = event.target.value.trim();
       const dropdown = document.getElementById("tag-dropdown");
 
-
-
       if (!query) {
         dropdown.style.display = "none";
         dropdown.innerHTML = '';
+        console.log("1");
+        event.target.style.removeProperty("border-bottom-left-radius");
+        event.target.style.removeProperty("border-bottom-right-radius");
         return;
       }
 
@@ -112,16 +108,48 @@
       if (results.length === 0) {
         dropdown.style.display = "none";
         dropdown.innerHTML = '';
+        console.log("2");
+        event.target.style.removeProperty("border-bottom-left-radius");
+        event.target.style.removeProperty("border-bottom-right-radius");
         return;
       }
 
       dropdown.style.display = "block";
       dropdown.innerHTML = results
-        .map(tag => `<div onclick="addTag('${tag.id}','${tag.name}')">${tag.name}</div>`)
+        .map((tag, index) => `<div data-index="${index}" onclick="selectTag('${tag.id}', '${tag.name}')">${tag.name}</div>`)
         .join('');
+      console.log("3");
+      event.target.style["border-bottom-left-radius"] = "0px"
+      event.target.style["border-bottom-right-radius"] = "0px"
+      dropdownIndex = -1; // Reset index
     }
 
-    function addTag(tagId, tagName) {
+    function navigateDropdown(event) {
+      const dropdown = document.getElementById("tag-dropdown");
+      const items = dropdown.querySelectorAll('div');
+
+      if (items.length === 0) return;
+
+      if (event.key === "ArrowDown") {
+        dropdownIndex = (dropdownIndex + 1) % items.length;
+        updateActiveItem(items);
+      } else if (event.key === "ArrowUp") {
+        dropdownIndex = (dropdownIndex - 1 + items.length) % items.length;
+        updateActiveItem(items);
+      } else if (event.key === "Enter" && dropdownIndex >= 0) {
+        items[dropdownIndex].click();
+      }
+      event.target.style.removeProperty("border-bottom-left-radius");
+      event.target.style.removeProperty("border-bottom-right-radius");
+    }
+
+    function updateActiveItem(items) {
+      items.forEach((item, index) => {
+        item.classList.toggle('active', index === dropdownIndex);
+      });
+    }
+
+    function selectTag(tagId, tagName) {
       if (selectedTags.includes(tagId)) return;
 
       selectedTags.push(tagId);
@@ -135,25 +163,22 @@
         <input type="checkbox">
         <span class="slider"></span>
       </label>
-      ${tagName} <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
+        ${tagName} <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
       tagList.appendChild(newTag);
 
       document.getElementById("tag-dropdown").style.display = "none";
-      document.getElementById("tag-input").value = '';
+      const tagInput = document.getElementById("tag-input");
+      tagInput.value = '';
+      tagInput.style.removeProperty("border-bottom-left-radius");
+      tagInput.style.removeProperty("border-bottom-right-radius");
     }
 
     function removeTag(tagId) {
       selectedTags = selectedTags.filter(tag => tag !== tagId);
 
       const tagList = document.getElementById("tag-list");
-      const tagDivs = tagList.getElementsByClassName("tag");
-
-      for (const tag of tagDivs) {
-        if (tag.id.startsWith(`tag-id-${tagId}`)) {
-          tagList.removeChild(tag);
-          break;
-        }
-      }
+      const tagDiv = document.getElementById(`tag-id-${tagId}`);
+      if (tagDiv) tagList.removeChild(tagDiv);
     }
     function removeTags() {
       selectedTags = [];

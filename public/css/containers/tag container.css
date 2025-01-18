@@ -1,74 +1,71 @@
-/* @import '../vars.css'; */
-.tag-container {
-    border: 1px solid #ccc;
-    border-radius: 1rem;
-    padding: var(--padding-test) 0px;
-    display: flex;
-    flex-wrap: wrap; /* Позволяет тегам переноситься на новую строку */
-    gap: 10px; /* Расстояние между тегами */
-    flex:1;
-    max-width: 16rem;
-    /* width: 100%; */
-    /*position:relative; /* Для корректной работы абсолютного позиционирования */
-}
-
-.tag {
-    background-color: #1e1e1e40; /* Цвет фона тега */
-    border-radius: 1rem;
-    border: white solid 1px ;
-    border-right: 0;
-    /*padding-left: 2px; /* Отступ внутри тега*/
-    padding-left:3px;
-    display: flex;
-    gap:0.25rem;
-    
-    align-items: center; /* Центрируем содержимое по вертикали */
-}
-
-.close {
-
-    padding: 0px 7px;
-    background-color: #1e1e1e40;
-    border-radius: 2rem;
-    border: white solid 1px ;
-    /*margin-left: 5px; /* Отступ между текстом тега и кнопкой закрытия */
-    cursor: pointer; /* Указатель при наведении на кнопку закрытия */
-    color: #ff0000; /* Цвет кнопки закрытия */
-}
-
-/* Стили для поля ввода типа search */
 .tag-input {
     background-color: transparent;
-    border: 1px solid #ffffffcc; /* Граница поля ввода */
-    border-radius: 3px; /* Скругленные углы */
-    padding: 5px 10px; /* Отступ внутри поля ввода */
-    outline: none; /* Убираем обводку при фокусе */
-    /*flex-grow: 1; /* Позволяет полю ввода занимать оставшееся пространство */
+    border: 1px solid #ffffffcc;
+    border-radius: var(--border-radius);
+    padding: calc(var(--padding-test) / 2) var(--padding-test);
+    outline: none;
+    width: 100%; /* Занимает всю ширину */
+    box-sizing: border-box; /* Учитывает padding */
 }
 
 .tag-input::placeholder {
-    color: #ffffff99; /* Цвет текста плейсхолдера */
+    color: #ffffff99;
 }
 
 .tag-dropdown {
-    color:var(--main-text-color);
-    position: absolute; /* Абсолютное позиционирование */
-    top: initial; /* Располагаем ниже поля ввода */
-    left: initial; /* Привязываем к левому краю контейнера */
-    width: initial; /* Ширина равна ширине поля ввода */
-    max-height: 150px; /* Ограничение высоты */
-    overflow-y: auto; /* Прокрутка при переполнении */
-    border: 1px solid #000000; /* Граница */
-    background-color: var(--main-color); /* Фон */
-    z-index: 1000; /* Поверх остальных элементов */
-    display: none; /* Изначально скрыт */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%; 
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--main-color);
+    border-radius: var(--border-radius);
+    border-top: none;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    z-index: 1000;
+    display: none; /* По умолчанию скрыт */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
 }
 
 .tag-dropdown div {
-    padding: 5px;
+    padding: 0px 8px;
     cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 }
 
-.tag-dropdown div:hover {
+.tag-dropdown div:hover,
+.tag-dropdown div.active {
+    /* background-color: #f0f0f0; */
     background-color: var(--shadow-color);
+    color: #ffffff; /* Контрастный текст при наведении */
+}
+
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: var(--margin-test);
+}
+
+.tag {
+    background-color: var(--main-color);
+    color: var(--main-text-color);
+    padding-left: 2px;
+    border-radius: 1.5rem;
+    border: white 1px solid;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.close {
+    cursor: pointer;
+    font-weight: bold;
+    color: #ff6666;
+    margin-left: 5px;
+    padding: 0px 7px;
+    background-color: #1e1e1e60;
+    border-radius: 1.5rem;
 }
