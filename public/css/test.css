@@ -141,6 +141,46 @@ body {
   justify-items: center;
   align-content: center; */
 }
+.button-container {
+  display: inline-flex;
+  border: 1px solid #ccc; /* Граница вокруг группы кнопок */
+  border-radius: var(--border-radius); /* Общий радиус для закругления */
+  overflow: hidden; /* Скрытие частей за границами */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень */
+}
+
+.button-container button {
+  padding: 0px var(--padding-test);
+  border: none;
+  flex:1;
+  background-color: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-container button:hover {
+  background-color: #ddd;
+}
+
+.button-container button:focus {
+  outline: none;
+  background-color: #ccc;
+}
+
+.button-container button:first-child {
+  border-top-left-radius: calc(var(--border-radius) - 2px);
+  border-bottom-left-radius: calc(var(--border-radius) - 2px);
+}
+
+.button-container button:last-child {
+  border-top-right-radius: calc(var(--border-radius) - 2px);
+  border-bottom-right-radius: calc(var(--border-radius) - 2px);
+}
+
+.button-container button:not(:last-child) {
+  border-right: 1px solid #ccc; /* Разделение между кнопками */
+}
 
 .footer {
   display: flex;

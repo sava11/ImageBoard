@@ -54,9 +54,13 @@
             oninput="searchTags(event)" onkeydown="navigateDropdown(event)" />
           <div id="tag-dropdown" class="tag-dropdown"></div>
         </div>
+        <div class="button-container" style="width:100%;">
+          <button onclick="search()">search</button>
+          <button onclick="removeTags()">X</button>
+        </div>
+        теги:
         <div id="tag-list" class="tag-container" style="border: none; min-width: 7.75rem; max-width: 25vw;"></div>
-
-
+        авторы:
       </div>
       <div class="content">
 
@@ -92,11 +96,12 @@
     async function searchTags(event) {
       const query = event.target.value.trim();
       const dropdown = document.getElementById("tag-dropdown");
-
+      if(dropdown.style.display == "none"){
+        
+      }
       if (!query) {
         dropdown.style.display = "none";
         dropdown.innerHTML = '';
-        console.log("1");
         event.target.style.removeProperty("border-bottom-left-radius");
         event.target.style.removeProperty("border-bottom-right-radius");
         return;
@@ -108,7 +113,6 @@
       if (results.length === 0) {
         dropdown.style.display = "none";
         dropdown.innerHTML = '';
-        console.log("2");
         event.target.style.removeProperty("border-bottom-left-radius");
         event.target.style.removeProperty("border-bottom-right-radius");
         return;
@@ -118,7 +122,7 @@
       dropdown.innerHTML = results
         .map((tag, index) => `<div data-index="${index}" onclick="selectTag('${tag.id}', '${tag.name}')">${tag.name}</div>`)
         .join('');
-      console.log("3");
+
       event.target.style["border-bottom-left-radius"] = "0px"
       event.target.style["border-bottom-right-radius"] = "0px"
       dropdownIndex = -1; // Reset index
@@ -139,8 +143,6 @@
       } else if (event.key === "Enter" && dropdownIndex >= 0) {
         items[dropdownIndex].click();
       }
-      event.target.style.removeProperty("border-bottom-left-radius");
-      event.target.style.removeProperty("border-bottom-right-radius");
     }
 
     function updateActiveItem(items) {
@@ -190,6 +192,37 @@
         tagList.removeChild(tag);
       }
     }
+
+    function search() {
+    // Получаем контейнер с тегами
+    const tagContainer = document.getElementById("tag-list");
+
+    // Получаем все теги
+    const tags = tagContainer.querySelectorAll(".tag");
+
+    // Массивы для хранения ID позитивных и негативных тегов
+    const positiveTags = [];
+    const negativeTags = [];
+
+    // Проходим по всем тегам
+    tags.forEach(tag => {
+        // Получаем ID тега
+        const id = tag.id.replace("tag-id-", ""); // Убираем "tag-id-" из ID
+
+        // Проверяем состояние чекбокса
+        const checkbox = tag.querySelector("input[type='checkbox']");
+        if (checkbox) {
+            if (checkbox.checked) {
+                negativeTags.push(id); // Если включен, это негативный тег
+            } else {
+                positiveTags.push(id); // Если выключен, это позитивный тег
+            }
+        }
+    });
+
+    // Возвращаем массивы
+    console.log( { positiveTags, negativeTags });
+}
   </script>
 </body>
 

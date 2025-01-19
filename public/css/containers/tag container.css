@@ -46,13 +46,12 @@
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: var(--margin-test);
+    /* margin: var(--margin-test) 0px; */
 }
 
 .tag {
     background-color: var(--main-color);
     color: var(--main-text-color);
-    padding-left: 2px;
     border-radius: 1.5rem;
     border: white 1px solid;
     display: flex;
