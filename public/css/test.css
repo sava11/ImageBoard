@@ -46,12 +46,11 @@ body {
   justify-content: center;
   align-items: center;
   border: 4px solid gray;
-  margin-bottom: var(--margin-test);
   justify-self: center;
 }
 .adv-image img {
   width: 100%;
-  height: 80px;
+  height: calc(var(--header-height) - 8px );
 }
 
 .header .user {
@@ -135,6 +134,8 @@ body {
   overflow-y: auto;
 }
 .search_container{
+  min-width: 7.75rem; 
+  max-width: 25vw;
   padding: var(--padding-test);
   /* justify-content: center;
   align-items: center;
@@ -163,10 +164,10 @@ body {
   background-color: #ddd;
 }
 
-.button-container button:focus {
+/* .button-container button:focus {
   outline: none;
   background-color: #ccc;
-}
+} */
 
 .button-container button:first-child {
   border-top-left-radius: calc(var(--border-radius) - 2px);

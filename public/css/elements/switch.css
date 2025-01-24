@@ -1,8 +1,4 @@
 /* The switch - the box around the slider */
-:root{
-    --unchecked-color:rgb(0, 255, 0);
-    --checked-color:rgb(255, 0, 0);
-}
 .switch {
   position: relative;
   display: inline-block;

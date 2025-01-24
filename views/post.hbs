@@ -84,11 +84,12 @@
               <span class="dislike-icon">👎</span>
               <span id="dislikeCount">{{dislikes}}</span>
             </button>
+            {{#if isAuthenticated}}
+            <button class="download-button">download</button>
+            {{/if}}
             {{#if isOwner}}
-            <div>
               <button onclick="editPost()">изменить</button>
               <button onclick="removePost()">удалить</button>
-            </div>
             <script>
               function removePost(){
                 fetch("/post/delete/{{documentId}}")
@@ -97,6 +98,14 @@
                     window.location.replace("/user/{{author_id}}")
                   })
                   .catch(err => console.error("Ошибка удаления", err));
+              }
+              function editPost(){
+                fetch("/post/edit/{{documentId}}")
+                  .then(response => response.json())
+                  .then(data => {
+                    window.location.replace("/user/{{author_id}}")
+                  })
+                  .catch(err => console.error("Ошибка редактирования", err));
                 
               }
             </script>
@@ -202,7 +211,7 @@
         <div class="flow-item">
           <div class="tag-container">
             {{#each tags}}
-            <div id="tag_{{this.id}}" class="tag">{{this.name}}</div>
+            <div id="tag_{{this.id}}" class="tag"><div class="name">{{this.name}}</div></div>
             {{/each}}
           </div>
         </div>

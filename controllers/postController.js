@@ -31,8 +31,8 @@ exports.savePostData = async (req, res) => {
     try {
         // Сохранение изображения
         await pool.promise().execute(
-            `INSERT INTO images (id, user_id, date, ext, status, \`desc\`) VALUES (?, ?, ?, ?, ?, ?)`,
-            [imageId, userId, today, path.extname(req.file.filename).slice(1), status, description || null]
+            `INSERT INTO images (id, user_id, date, ext, status, \`desc\`) VALUES (?, ?, NOW(), ?, ?, ?)`,
+            [imageId, userId, path.extname(req.file.filename).slice(1), status, description || null]
         );
 
         // Сохранение тегов
@@ -45,7 +45,7 @@ exports.savePostData = async (req, res) => {
                 );
             }
         }
-        res.status(200).json({ message: "изображение сохранено.", id:imageId });
+        res.status(200).json({ message: "изображение сохранено.", id: imageId });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ message: "Ошибка сохранения изображения." });
@@ -53,11 +53,11 @@ exports.savePostData = async (req, res) => {
 };
 
 exports.uploadPost = (req, res) => {
-    res.render("upload",{
-        userName : req.session.user ? req.session.user.login : "Войти",
-        isAuthenticated : !!req.session.user, // true, если пользователь вошёл
+    res.render("upload", {
+        userName: req.session.user ? req.session.user.login : "Войти",
+        isAuthenticated: !!req.session.user, // true, если пользователь вошёл
     }); // Отображаем форму загрузки
-}
+};
 
 exports.getPostById = async (req, res) => {
     const { id } = req.params;
@@ -129,23 +129,23 @@ exports.getPostById = async (req, res) => {
             author_id: data[0].author_id,
             author_name: data[0].author_name,
             tags: _tags,
-            postAction:data[0].action,
+            postAction: data[0].action,
             likes: data[0].likes,
             dislikes: data[0].dislikes
         };
         const userName = req.session.user ? req.session.user.login : "Войти";
         const isOwner = (isAuthenticated && (req.session.user.id == post.author_id));
         function isInt(value) {
-            return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
-          }
+            return !isNaN(value) && (function (x) { return (x | 0) === x; })(parseFloat(value))
+        }
         res.render("post.hbs", {
             documentId: post.id,
             userName,
             curUserID,
             isAuthenticated,
             isOwner,
-            voted:isInt(data[0].action),
-            postAction:post.postAction,
+            voted: isInt(data[0].action),
+            postAction: post.postAction,
             isNotOwner: !isOwner,
             isDraft: post.status == 1,
             isPublished: post.status == 2,
@@ -197,16 +197,33 @@ exports.deletePostById = (req, res) => {
 
 exports.editPostById = (req, res) => {
 
-}
+};
+
+exports.download = (req, res) => {
+    const {id}=req.params;
+    pool.query(`SELECT ext FROM images WHERE id = ?`, [id], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(500).json({ message: "Пост для загрузки не найден или ошибка базы данных" });
+        }
+
+        const fileExtension = results[0].ext;
+        const filePath = path.join(__dirname, "../imgs/uploads", `${id}.${fileExtension}`);
+        if (fs.existsSync(filePath)) {
+            res.download(filePath);
+        } else {
+            res.status(404).json({ message: "Изображение не найдено." });
+        }
+    })
+};
 
 exports.vote = async (req, res) => {
     const { post, vote_type } = req.body;
     try {
-        let querry=`call makeVote(${req.session.user.id},"${post}",${vote_type});`;
-        const[tt]=await pool.promise().execute(querry);
-        res.status(200).json({ message : "проголосовано" });
+        let querry = `call makeVote(${req.session.user.id},"${post}",${vote_type});`;
+        const [tt] = await pool.promise().execute(querry);
+        res.status(200).json({ message: "проголосовано" });
     } catch (err) {
         res.status(500).json({ message: "Ошибка голосовния:", m: err.message });
     }
-}
+};
 

@@ -51,14 +51,16 @@
                     </div>
                     <input type="file" id="file-input" accept="image/*" style="display:none;">
                     <label for="description">Описание:</label><br>
-                    <textarea name="description" id="description" rows="4" cols="calc(15 * 5)"
+                    <textarea name="description" id="description" cols="60" rows="4" cols="calc(15 * 5)"
                         style="resize: vertical;"></textarea><br>
                 </div>
                 <div class="flex-item">
-                    <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
-                        oninput="searchTags(event)" />
-                    <div id="tag-dropdown" class="tag-dropdown"></div>
-                    <div id="tag-list" class="tag-container"></div>
+                    <div class="tag-container-wrapper" style="position: relative;">
+                        <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
+                            oninput="searchTags(event)" onkeydown="navigateDropdown(event)" />
+                        <div id="tag-dropdown" class="tag-dropdown"></div>
+                    </div>
+                    <div id="tag-list" class="tag-container" style="border: none;"></div>
                 </div>
             </div>
         </div>
@@ -80,13 +82,19 @@
     <script src="/js/elements/dad.js"></script>
     <script>
         let selectedTags = [];
+        let dropdownIndex = -1;
+
         async function searchTags(event) {
             const query = event.target.value.trim();
             const dropdown = document.getElementById("tag-dropdown");
+            //if(dropdown.style.display == "none"){
 
+            //}
             if (!query) {
                 dropdown.style.display = "none";
                 dropdown.innerHTML = '';
+                event.target.style.removeProperty("border-bottom-left-radius");
+                event.target.style.removeProperty("border-bottom-right-radius");
                 return;
             }
 
@@ -96,17 +104,46 @@
             if (results.length === 0) {
                 dropdown.style.display = "none";
                 dropdown.innerHTML = '';
+                event.target.style.removeProperty("border-bottom-left-radius");
+                event.target.style.removeProperty("border-bottom-right-radius");
                 return;
             }
 
             dropdown.style.display = "block";
             dropdown.innerHTML = results
-                .map(tag => `<div onclick="addTag('${tag.id}','${tag.name}')">${tag.name}</div>`)
+                .map((tag, index) => `<div data-index="${index}" onclick="selectTag('${tag.id}', '${tag.name}')">${tag.name}</div>`)
                 .join('');
+
+            event.target.style["border-bottom-left-radius"] = "0px"
+            event.target.style["border-bottom-right-radius"] = "0px"
+            dropdownIndex = -1; // Reset index
         }
 
-        function addTag(tagId, tagName) {
-            if (selectedTags.includes(tagName)) return;
+        function navigateDropdown(event) {
+            const dropdown = document.getElementById("tag-dropdown");
+            const items = dropdown.querySelectorAll('div');
+
+            if (items.length === 0) return;
+
+            if (event.key === "ArrowDown") {
+                dropdownIndex = (dropdownIndex + 1) % items.length;
+                updateActiveItem(items);
+            } else if (event.key === "ArrowUp") {
+                dropdownIndex = (dropdownIndex - 1 + items.length) % items.length;
+                updateActiveItem(items);
+            } else if (event.key === "Enter" && dropdownIndex >= 0) {
+                items[dropdownIndex].click();
+            }
+        }
+
+        function updateActiveItem(items) {
+            items.forEach((item, index) => {
+                item.classList.toggle('active', index === dropdownIndex);
+            });
+        }
+
+        function selectTag(tagId, tagName) {
+            if (selectedTags.includes(tagId)) return;
 
             selectedTags.push(tagId);
 
@@ -114,26 +151,32 @@
             const newTag = document.createElement("div");
             newTag.className = "tag";
             newTag.id = `tag-id-${tagId}`;
-            newTag.innerHTML = `${tagName} <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
+            newTag.innerHTML = `
+            <div class="name">${tagName}</div> <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
             tagList.appendChild(newTag);
 
             document.getElementById("tag-dropdown").style.display = "none";
-            document.getElementById("tag-input").value = '';
+            const tagInput = document.getElementById("tag-input");
+            tagInput.value = '';
+            tagInput.style.removeProperty("border-bottom-left-radius");
+            tagInput.style.removeProperty("border-bottom-right-radius");
         }
 
         function removeTag(tagId) {
             selectedTags = selectedTags.filter(tag => tag !== tagId);
 
             const tagList = document.getElementById("tag-list");
-            const tagDivs = tagList.getElementsByClassName("tag");
-
-            for (const tag of tagDivs) {
-                if (tag.id.startsWith(tagId)) {
-                    tagList.removeChild(tag);
-                    break;
-                }
-            }
+            const tagDiv = document.getElementById(`tag-id-${tagId}`);
+            if (tagDiv) tagList.removeChild(tagDiv);
         }
+        function removeTags() {
+            selectedTags = [];
+
+            const tagList = document.getElementById("tag-list");
+
+            tagList.innerHTML = '';
+        }
+
 
         document.getElementById("uploadBtn").addEventListener("click", () => saveImage(1)); // Черновик
         document.getElementById("releaseBtn").addEventListener("click", () => saveImage(2)); // Опубликовать

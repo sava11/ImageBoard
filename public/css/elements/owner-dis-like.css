@@ -1,3 +1,17 @@
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(183, 0, 255);
+    color:white;
+    border:none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
 .like-button, .dislike-button {
     display: inline-flex;
     align-items: center;
@@ -8,6 +22,9 @@
     font-size: 14px;
     padding: 5px 10px;
     border-radius: 20px;
+}
+.download-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .like-button span, .dislike-button span {

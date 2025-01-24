@@ -20,10 +20,11 @@
         <img src="/imgs/ori_ico1.svg" alt="Logo">
         <span>artX</span>
       </a>
-      {{!-- <div class="flow-container">
-        <a href="/" style="text-decoration: none; color:white;" class="flow-item">поиск</a>
-        <a class="flow-item">подписки</a>
-      </div> --}}
+      <div><a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
+          title="" border="0">
+          <img id="advertisement-image-top" src="" alt="Advertisement"></a>
+        <script src="/js/get-random-adv.js"></script>
+      </div>
       <div class="user">
         <a href="/user/login">
           <span>{{userName}}</span>
@@ -49,26 +50,26 @@
     <div class="main-content">
       <div class="search_container">
         <link rel="stylesheet" href="/css/elements/switch.css" type="text/css" />
-        <div class="tag-container-wrapper" style="position: relative; min-width: 7.75rem; max-width: 25vw;">
+        <div class="tag-container-wrapper" style="position: relative;">
           <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
             oninput="searchTags(event)" onkeydown="navigateDropdown(event)" />
           <div id="tag-dropdown" class="tag-dropdown"></div>
         </div>
         <div class="button-container" style="width:100%;">
-          <button onclick="search()">search</button>
+          <button onclick="startSearch()">search</button>
           <button onclick="removeTags()">X</button>
         </div>
+        сортировка по:
+        <select id="menu">
+          <option id="0">возврастанию</option>
+          <option id="1">убыванию</option>
+        </select><br>
+        страница: <input id="pageNumber" type="number" min="0" value="0" style="width:5vh;">
+        <div class="pages" id="pages"></div>
         теги:
-        <div id="tag-list" class="tag-container" style="border: none; min-width: 7.75rem; max-width: 25vw;"></div>
-        авторы:
+        <div id="tag-list" class="tag-container" style="border: none;"></div>
       </div>
       <div class="content">
-
-        <!--<div><a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
-          title="" border="0">
-          <img id="advertisement-image-top" src="" alt="Advertisement"></a>
-        <script src="/js/get-random-adv.js"></script>
-      </div>-->
         {{!-- {{> (lookup . "pageContent") }} --}}
         <div id="item-container" class="card-container"></div>
         <script src="/js/get-simple-image-data.js"></script>
@@ -96,9 +97,9 @@
     async function searchTags(event) {
       const query = event.target.value.trim();
       const dropdown = document.getElementById("tag-dropdown");
-      if(dropdown.style.display == "none"){
-        
-      }
+      //if(dropdown.style.display == "none"){
+
+      //}
       if (!query) {
         dropdown.style.display = "none";
         dropdown.innerHTML = '';
@@ -186,43 +187,15 @@
       selectedTags = [];
 
       const tagList = document.getElementById("tag-list");
-      const tagDivs = tagList.getElementsByClassName("tag");
 
-      for (const tag of tagDivs) {
-        tagList.removeChild(tag);
-      }
+      tagList.innerHTML = '';
     }
 
-    function search() {
-    // Получаем контейнер с тегами
-    const tagContainer = document.getElementById("tag-list");
-
-    // Получаем все теги
-    const tags = tagContainer.querySelectorAll(".tag");
-
-    // Массивы для хранения ID позитивных и негативных тегов
-    const positiveTags = [];
-    const negativeTags = [];
-
-    // Проходим по всем тегам
-    tags.forEach(tag => {
-        // Получаем ID тега
-        const id = tag.id.replace("tag-id-", ""); // Убираем "tag-id-" из ID
-
-        // Проверяем состояние чекбокса
-        const checkbox = tag.querySelector("input[type='checkbox']");
-        if (checkbox) {
-            if (checkbox.checked) {
-                negativeTags.push(id); // Если включен, это негативный тег
-            } else {
-                positiveTags.push(id); // Если выключен, это позитивный тег
-            }
-        }
-    });
-
-    // Возвращаем массивы
-    console.log( { positiveTags, negativeTags });
-}
+    function startSearch() {
+      const dropdown = document.getElementById('menu'); // Получаем <select> элемент
+      const selectedOption = dropdown.options[dropdown.selectedIndex]; // Получаем выбранный <option>
+      search(document.getElementById("pageNumber").value, selectedOption.id);
+    }
   </script>
 </body>
 

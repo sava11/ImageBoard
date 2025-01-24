@@ -19,18 +19,28 @@ exports.getImageById = async (req, res) => {
     }
 };
 
+exports.getAuthorAnalitic=async (req,res)=>{
+    const {userId}=req.params;
+    // pool.query("")
+}
+
 // Получить все изображения с их тегами и пользователями
 exports.getSimpleImages = async (req, res) => {
-    const page=0;
+    const positive = String(req.query.pos);
+    const negative = String(req.query.neg);
+    const sort=String(req.query.sort);
+    const page = (req.query.page ? req.query.page : 0);
     try {
         const [images1] = await pool.promise()
-        .execute(`call search_images(${page},${100},'','');`);
-        const images=images1[0];
+            .execute(`call search_images(${page},${100},'',
+            '${positive}','${negative}',${sort},
+            '2020-01-01',date_add(CURDATE(), INTERVAL 1 day));`);
+        const images = images1[0];
         res.status(200).json({ images });
 
     } catch (err) {
         console.error("Ошибка при получении изображений:", err);
-        res.status(500).json({ message: "Ошибка при получении изображений.", m: err.m });
+        res.status(500).json({ message: "Ошибка при получении изображений.", m: err.message });
     }
 };
 
