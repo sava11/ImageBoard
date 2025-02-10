@@ -11,6 +11,22 @@ router.get("/upload",
     postController.uploadPost
 );
 
+router.get("/diagram",
+    userController.isAuthenticated,
+    userController.userHasStatus,
+    postController.drawPostsPerDayDiagram
+);
+router.get("/diagram-data",
+    userController.isAuthenticated,
+    userController.userHasStatus,
+    postController.getPostsPerDayDiagramData
+);
+router.get("/diagram-data-download",
+    userController.isAuthenticated,
+    userController.userHasStatus,
+    postController.downloadPostsPerDayCSV
+);
+
 router.post(
     "/upload",
     userController.isAuthenticated, // Проверка авторизации
@@ -33,5 +49,6 @@ router.get("/download/:id",
     userController.isAuthenticated,
     postController.download
 );
+
 
 module.exports = router;

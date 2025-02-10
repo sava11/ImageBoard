@@ -53,4 +53,4 @@ async function search(page,sort) {
     });
   }).catch(err => console.error("Ошибка загрузки изображений:", err));
 }
-search(0,0);
+search(0,1);

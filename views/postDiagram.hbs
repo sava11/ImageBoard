@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="image/favicon" rel="shortcut icon" href="/imgs/ori_ico1.svg">
+  <link rel="stylesheet" href="/css/vars.css" type="text/css" />
+  <link rel="stylesheet" href="/css/test.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/card container.css" type="text/css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/d3js/7.8.5/d3.min.js"></script>
+  <title>Diagram</title>
+  <style>
+    .chart-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .chart-wrapper {
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-container">
+    <div class="header">
+      <a class="logo" href="/">
+        <img src="/imgs/ori_ico1.svg" alt="Logo">
+        <span>artX</span>
+      </a>
+      <div><a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" alt="" target="_blank"
+          title="" border="0">
+          <img id="advertisement-image-top" src="" alt="Advertisement"></a>
+        <script src="/js/get-random-adv.js"></script>
+      </div>
+      <div class="user">
+        <a href="/user/login">
+          <span>{{userName}}</span>
+        </a>
+        {{#if isAuthenticated}}
+        <button class="menu-button">
+          <img src="/imgs/settings.svg" width="24px">
+        </button>
+        <div class="dropdown-menu hidden">
+          <a href="/user/settings">
+            <div class="menu-item"><span>настройки</span></div>
+          </a>
+          <a href="/post/upload">
+            <div class="menu-item"><span>загрузить</span></div>
+          </a>
+          <button id="user-exit" class="menu-item">выйти</button>
+        </div>
+        <script src="/js/elements/header.js"></script>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <div class="content">
+        <span style="font-size:5REM;">Статистика по выгрузкам на сервис</span>
+        <div>
+          <input id="dt1" type="date" />
+          <input id="dt2" type="date" />
+          <input id="upd" type="button" value="обновить" />
+          <button class="download-button">download</button>
+
+          <script>
+            document.querySelector(".download-button").addEventListener("click", function () {
+              const fromDate = document.getElementById("dt1").value || "2024-01-01";
+              const toDate = document.getElementById("dt2").value || "2025-12-31";
+              const downloadUrl = `/post/diagram-data-download?fromData=${fromDate}&toData=${toDate}`;
+
+              // Создаем скрытую ссылку для скачивания
+              const a = document.createElement("a");
+              a.href = downloadUrl;
+              a.setAttribute("download", ""); // Подсказывает браузеру, что это скачивание
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            });
+          </script>
+
+        </div>
+        <div class="chart-container">
+          <div class="chart-wrapper">
+            <svg id="diagram"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="footer-item">
+        <img src="/imgs/author-icon.svg" alt="Автор" class="footer-icon">
+        <span>Емельяненко Савелий</span>
+      </div>
+      <div class="footer-item">
+        <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
+        <a href="mailto:ivan.ivanov@example.com">Sovergon15@gmail.com</a>
+      </div>
+      <div class="footer-item">
+        <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
+        <a href="/about">О проекте</a>
+      </div>
+    </footer>
+  </div>
+  <script>
+    function isEmpty(obj) {
+      for (const prop in obj) {
+        if (Object.hasOwn(obj, prop)) {
+          return false;
+        }
+      } return true;
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+      function fetchDataAndDrawChart() {
+        const fromDate = document.getElementById("dt1").value || "2024-01-01";
+        const toDate = document.getElementById("dt2").value || "2025-12-31";
+
+        fetch(`/post/diagram-data?fromData=${fromDate}&toData=${toDate}`)
+          .then(response => response.json())
+          .then(data => {
+            if (Object.keys(data).length > 0) {
+              drawChart(processData(data));
+            } else {
+              d3.select("#diagram").selectAll("*").remove();
+            }
+          });
+      }
+
+      function processData(data) {
+        const counts = {};
+
+        data.forEach(post => {
+          const date = post.date.split("T")[0];
+          counts[date] = (counts[date] || 0) + 1;
+        });
+
+        return Object.entries(counts).map(([date, count]) => ({ date, count }));
+      }
+
+      function drawChart(data) {
+        const svg = d3.select("#diagram");
+        const barWidth = 40; // Фиксированная ширина столбца
+        const numBars = data.length;
+        const width = Math.max(500, numBars * barWidth + 100); // Минимальная ширина 500px
+        const height = 400;
+        const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+
+        svg.attr("width", width).attr("height", height);
+        svg.selectAll("*").remove();
+
+        const xScale = d3.scaleBand()
+          .domain(data.map(d => d.date))
+          .range([0, innerWidth])
+          .padding(0.1);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d.count)])
+          .range([innerHeight, 0]);
+
+        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        g.append("g")
+          .call(d3.axisLeft(yScale));
+
+        g.append("g")
+          .attr("transform", `translate(0,${innerHeight})`)
+          .call(d3.axisBottom(xScale))
+          .selectAll("text")
+          .attr("transform", "rotate(-45)")
+          .style("text-anchor", "end");
+
+        g.selectAll("rect")
+          .data(data)
+          .enter().append("rect")
+          .attr("x", d => xScale(d.date))
+          .attr("y", d => yScale(d.count))
+          .attr("width", barWidth - 5) // Одинаковая ширина столбцов
+          .attr("height", d => innerHeight - yScale(d.count))
+          .attr("fill", "steelblue");
+      }
+
+
+      document.getElementById("upd").addEventListener("click", fetchDataAndDrawChart);
+      fetchDataAndDrawChart();
+    });
+
+  </script>
+</body>
+
+</html>

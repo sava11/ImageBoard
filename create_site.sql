@@ -156,8 +156,8 @@ INSERT INTO untrusted_tags (name) VALUES
 INSERT INTO images (id, user_id, `date`, ext,  approver, status, `desc`) VALUES
 ("fe6bf79b466ab316e3e105033795c7f4", 1, NOW(), "jpg", 3, 2, "Красивый вид на горы"),
 ("539d4c48e4984a7b368ba75d252d3ec9", 2,date_add(NOW(), INTERVAL 1 minute), "svg", 3, 2, "Красивый вид на ORI"),
-("0", 1, date_add(NOW(), INTERVAL 2 minute), "jpg", 3, 2, "Красивый вид на ORI")/*,
-("539d4c48e4984a7b368ba75d252d3ec7", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
+("0", 1, date_add(NOW(), INTERVAL 2 day), "jpg", 3, 2, "Красивый вид на ORI"),
+("89d5436984410ba572d7b8afcec56c46", 3, date_add(NOW(), INTERVAL 3 day), "svg", 3, 2, "")/*,
 ("539d4c48e4984a7b368ba75d252d3ec6", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec5", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec4", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
@@ -555,7 +555,7 @@ GROUP BY
 ORDER BY 
     tag_count DESC;
 
-   
+select id,date from images where date between '2024-01-01' and '2025-12-31';
 
 call search_images(0,100,'','','',0,curdate(),date_add(CURDATE(), INTERVAL 1 day));
 

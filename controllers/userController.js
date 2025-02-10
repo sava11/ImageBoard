@@ -54,6 +54,16 @@ exports.isAuthenticated = (req, res, next) => {
     }
     next();
 };
+exports.userHasStatus = (req, res, next) => {
+    pool.query(`SELECT id FROM users WHERE id=${req.session.user.id} and status>2`, async (err, results) => {
+        if (err || results.length === 0) {
+            console.error("no access");
+            res.status(500).json({message:"нет доступа"});
+        }else{
+            next();
+        }
+    });
+};
 
 exports.user = (req, res) => {
     const { id } = req.params;
@@ -65,10 +75,12 @@ exports.user = (req, res) => {
             }
             const user = results[0];
             const authenticated= !!req.session.user;
+            const [isAdmin] = await pool.promise().execute(`select id from users where id =${req.session.user.id} and status=3`);
             res.render("profile/profile", {
                 documentName: "Профиль " + user.login,
                 user: user,
                 userName: userName,
+                isAdmin:isAdmin[0]?true:false,
                 // displayUpload:authenticated ? user.id==req.session.user.id : false,
                 isAuthenticated: authenticated,
             });

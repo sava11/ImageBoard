@@ -30,6 +30,12 @@
                     <a href="/user/settings">
                         <div class="menu-item"><span>настройки</span></div>
                     </a>
+
+                   {{#if isAdmin}}
+                    <a href="/post/diagram">
+                        <div class="menu-item"><span>статистика</span></div>
+                    </a>
+                    {{/if}}
                     <a href="/post/upload">
                         <div class="menu-item"><span>загрузить</span></div>
                     </a>

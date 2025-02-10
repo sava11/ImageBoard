@@ -40,6 +40,10 @@
           <a href="/post/upload">
             <div class="menu-item"><span>загрузить</span></div>
           </a>
+          {{#if showDiagram}}
+          <a href="/post/diagram">
+            <div class="menu-item"><span>диаграма</span></div>
+          </a>{{/if}}
           <button id="user-exit" class="menu-item">выйти</button>
         </div>
         <script src="/js/elements/header.js"></script>
@@ -61,8 +65,8 @@
         </div>
         сортировка по:
         <select id="menu">
-          <option id="0">возврастанию</option>
           <option id="1">убыванию</option>
+          <option id="0">возврастанию</option>
         </select><br>
         страница: <input id="pageNumber" type="number" min="0" value="0" style="width:5vh;">
         <div class="pages" id="pages"></div>

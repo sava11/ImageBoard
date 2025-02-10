@@ -149,7 +149,7 @@ exports.getPostById = async (req, res) => {
             isNotOwner: !isOwner,
             isDraft: post.status == 1,
             isPublished: post.status == 2,
-            imageUrl: data[0].ext, // Не забудьте добавить ссылку на изображение
+            imageUrl: data[0].ext,
             description: post.description,
             author_id: post.author_id,
             author_name: post.author_name,
@@ -200,21 +200,95 @@ exports.editPostById = (req, res) => {
 };
 
 exports.download = (req, res) => {
-    const {id}=req.params;
+    const { id } = req.params;
+
     pool.query(`SELECT ext FROM images WHERE id = ?`, [id], (err, results) => {
         if (err || results.length === 0) {
-            return res.status(500).json({ message: "Пост для загрузки не найден или ошибка базы данных" });
+            return res.status(404).json({ message: "Файл не найден." });
         }
 
         const fileExtension = results[0].ext;
         const filePath = path.join(__dirname, "../imgs/uploads", `${id}.${fileExtension}`);
+
         if (fs.existsSync(filePath)) {
+            res.setHeader("Content-Disposition", `attachment; filename=${id}.${fileExtension}`);
+            res.setHeader("Content-Type", "application/octet-stream");
             res.download(filePath);
         } else {
-            res.status(404).json({ message: "Изображение не найдено." });
+            res.status(404).json({ message: "Файл не существует." });
         }
-    })
+    });
 };
+exports.drawPostsPerDayDiagram = (req, res) => {
+    const userName = req.session.user ? req.session.user.login : "Войти";
+    const isAuthenticated = !!req.session.user; // true, если пользователь вошёл
+    res.render("postDiagram.hbs", { 
+        userName,
+        isAuthenticated,
+
+    });
+}
+
+exports.getPostsPerDayDiagramData = (req, res) => {
+    const fromDate = req.query.fromData?req.query.fromData:'2024-01-01';
+    const toDate = req.query.toData?req.query.toData:'2025-12-31';
+    const querry = `select id,date from images where date between '${fromDate}' and '${toDate}';`;
+    pool.query(querry, (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(500).json({ });
+        }
+        res.status(200).json(results);
+    });
+}
+
+
+exports.downloadPostsPerDayCSV = (req, res) => {
+    const fromDate = req.query.fromData || "2024-01-01";
+    const toDate = req.query.toData || "2025-12-31";
+
+    const query = `SELECT id, date FROM images WHERE date BETWEEN ? AND ? ORDER BY date;`;
+    pool.query(query, [fromDate, toDate], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: "Ошибка базы данных", error: err });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: "Нет данных для экспорта." });
+        }
+
+        // Группируем данные по датам
+        const groupedData = {};
+        results.forEach(row => {
+            const date = row.date.toISOString().split("T")[0]; // Форматируем дату
+            if (!groupedData[date]) groupedData[date] = [];
+            groupedData[date].push(row.id);
+        });
+
+        // Создаём CSV-данные
+        let csvContent = "Дата,ID изображений\n"; // Заголовки
+        Object.entries(groupedData).forEach(([date, ids]) => {
+            csvContent += `${date},"${ids.join(",")}"\n`; // Записываем строку
+        });
+
+        // Генерируем путь к файлу
+        const filePath = path.join(__dirname, "../exports", `posts_per_day_${Date.now()}.csv`);
+        
+        // Записываем CSV-файл
+        fs.writeFileSync(filePath, csvContent, "utf8");
+
+        // Отправляем файл клиенту
+        res.download(filePath, "posts_per_day.csv", err => {
+            if (err) {
+                console.error("Ошибка при отправке файла:", err);
+                res.status(500).json({ message: "Ошибка загрузки файла" });
+            }
+            // Удаляем файл после отправки
+            setTimeout(() => fs.unlinkSync(filePath), 10000);
+        });
+    });
+};
+
+
 
 exports.vote = async (req, res) => {
     const { post, vote_type } = req.body;

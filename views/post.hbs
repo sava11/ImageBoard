@@ -14,7 +14,7 @@
   {{/if}}
   <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
   <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
-    <link rel="stylesheet" href="/css/vars.css" type="text/css" />
+  <link rel="stylesheet" href="/css/vars.css" type="text/css" />
   <link rel="stylesheet" href="/css/test.css" type="text/css" />
   {{#if isOwner}}
   <link rel="stylesheet" href="/css/elements/owner-dis-like.css" type="text/css" />
@@ -74,7 +74,7 @@
 
       <div class="flow-container">
         <div class="flow-item">
-          <img src="/image/{{documentId}}" style="width:25vh;" alt="Изображение"><br>
+          <img src="/image/{{documentId}}" style="width:40vw;" alt="Изображение"><br>
           <div class="post-actions">
             <button class="like-button " id="likeButton">
               <span class="like-icon">👍</span>
@@ -86,12 +86,26 @@
             </button>
             {{#if isAuthenticated}}
             <button class="download-button">download</button>
+            <script>
+              document.querySelector(".download-button").addEventListener("click", function () {
+                const documentId = "{{documentId}}"; // Подставь реальный ID
+                const downloadUrl = `/post/download/${documentId}`;
+
+                // Создаем скрытую ссылку для скачивания
+                const a = document.createElement("a");
+                a.href = downloadUrl;
+                a.setAttribute("download", ""); // Подсказывает браузеру, что это скачивание
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              });
+            </script>
             {{/if}}
             {{#if isOwner}}
-              <button onclick="editPost()">изменить</button>
-              <button onclick="removePost()">удалить</button>
+            <button onclick="editPost()">изменить</button>
+            <button onclick="removePost()">удалить</button>
             <script>
-              function removePost(){
+              function removePost() {
                 fetch("/post/delete/{{documentId}}")
                   .then(response => response.json())
                   .then(data => {
@@ -99,14 +113,14 @@
                   })
                   .catch(err => console.error("Ошибка удаления", err));
               }
-              function editPost(){
+              function editPost() {
                 fetch("/post/edit/{{documentId}}")
                   .then(response => response.json())
                   .then(data => {
                     window.location.replace("/user/{{author_id}}")
                   })
                   .catch(err => console.error("Ошибка редактирования", err));
-                
+
               }
             </script>
             {{/if}}
@@ -211,7 +225,9 @@
         <div class="flow-item">
           <div class="tag-container">
             {{#each tags}}
-            <div id="tag_{{this.id}}" class="tag"><div class="name">{{this.name}}</div></div>
+            <div id="tag_{{this.id}}" class="tag">
+              <div class="name">{{this.name}}</div>
+            </div>
             {{/each}}
           </div>
         </div>
@@ -235,7 +251,7 @@
   {{#if voted}}
   <script>
     function set_actions() {
-      if ({{postAction}}== 0) {
+      if ({{ postAction }} == 0) {
       dislikeButton.classList.toggle("active");
       likeButton.classList.remove("active");
     }
