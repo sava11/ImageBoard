@@ -37,4 +37,9 @@ app.use("/image", imageRouter);
 app.use("/post", postRouter);
 app.use("/adv", advRouter);
 
-app.listen(3000, () => console.log("Сервер запущен и ожидает подключения..."));
+
+module.exports = app;
+
+if (require.main === module) {
+    app.listen(3000, () => console.log("Сервер запущен и ожидает подключения..."));
+}

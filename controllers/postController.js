@@ -222,7 +222,7 @@ exports.download = (req, res) => {
 exports.drawPostsPerDayDiagram = (req, res) => {
     const userName = req.session.user ? req.session.user.login : "Войти";
     const isAuthenticated = !!req.session.user; // true, если пользователь вошёл
-    res.render("postDiagram.hbs", { 
+    res.status(200).render("postDiagram.hbs", { 
         userName,
         isAuthenticated,
 

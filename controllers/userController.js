@@ -28,7 +28,7 @@ exports.login = (req, res) => {
     const { email, password } = req.body;
     pool.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
         if (err || results.length === 0) {
-            return res.status(401).send("Неверный логин или пароль (jncendbct)");
+            return res.status(401).send("Неверный логин или пароль. Возможно сервер недоступен.");
         }
 
         const user = results[0];
@@ -55,9 +55,10 @@ exports.isAuthenticated = (req, res, next) => {
     next();
 };
 exports.userHasStatus = (req, res, next) => {
-    pool.query(`SELECT id FROM users WHERE id=${req.session.user.id} and status>2`, async (err, results) => {
+    pool.query(`SELECT id,login,status FROM users WHERE id=${req.session.user.id} and status>2`, async (err, results) => {
+
         if (err || results.length === 0) {
-            console.error("no access");
+            console.error(`no access to ${req.session.user.id}`);
             res.status(500).json({message:"нет доступа"});
         }else{
             next();
@@ -75,15 +76,19 @@ exports.user = (req, res) => {
             }
             const user = results[0];
             const authenticated= !!req.session.user;
-            const [isAdmin] = await pool.promise().execute(`select id from users where id =${req.session.user.id} and status=3`);
-            res.render("profile/profile", {
+            let dict={
                 documentName: "Профиль " + user.login,
                 user: user,
                 userName: userName,
-                isAdmin:isAdmin[0]?true:false,
+                isAdmin:false,
                 // displayUpload:authenticated ? user.id==req.session.user.id : false,
                 isAuthenticated: authenticated,
-            });
+            }
+            if (authenticated){
+                const [isAdmin] = await pool.promise().execute(`select id from users where id =${req.session.user.id} and status=3`);
+                dict.isAdmin=isAdmin[0]?true:false;
+            }
+            res.render("profile/profile", dict);
 
         });
 
