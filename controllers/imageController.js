@@ -1,7 +1,8 @@
 const pool = require("../dataBase/db");
 const path = require("path");
 const fs = require("fs");
-const uploadFolder = path.join(__dirname, "../imgs/uploads");
+console.log(process.env.UPLOAD_DIR);
+const uploadFolder = path.join(__dirname, "../", process.env.UPLOAD_DIR);
 exports.getImageById = async (req, res) => {
     const { id } = req.params;
     const [image_data] = await pool.promise().execute(`
