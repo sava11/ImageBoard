@@ -8,21 +8,27 @@ const userRouter = require("./routes/userRouter.js");
 const imageRouter = require("./routes/imageRouter.js");
 const postRouter = require("./routes/postRouter.js");
 const advRouter = require("./routes/advRouter.js");
-
+console.log(__dirname);
 const hbs = require('hbs');
-hbs.registerPartials(__dirname + '/views/partials');
+const path = require('path');
+
+// Установка шаблонизатора HBS
+hbs.registerPartials(path.resolve(__dirname, 'views/partials'));
+app.set('views', path.resolve(__dirname, 'views')); // Укажите путь к папке views
+app.set('view engine', 'hbs');
 app.set("view engine", "hbs");
+app.set('trust proxy', 1);
 
 const key="12453613euqdhfw81eqdls3";
 app.use(cookieParser(key)); // Установите секретный ключ для подписанных кук
 app.use(session({
     secret: key,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {
-        httpOnly: true, // Защита от XSS
-        secure: false, // Установите true, если используете HTTPS
-        maxAge: 1000 * 60 * 60 * 24, // Время жизни куки (например, 1 день)
+        httpOnly: true, // Делаем куку HttpOnly
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 7 * 60 * 60 * 24, // Время жизни куки (например, 7 дней)
     }
 }));
 

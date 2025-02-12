@@ -1,39 +1,48 @@
-const request = require("supertest");
-const app = require("../app");
+const request = require('supertest');
+const app = require('../app'); // Подключаем приложение Express
+const bcrypt = require('bcrypt');
 
-const users = {
-    user: { id: 1, login: "user1", email: "1@1", status: 1 },
-    editor: { id: 2, login: "editor1", email: "2@1", status: 2 },
-    admin: { id: 3, login: "admin1", email: "3@1", status: 3 }
-};
+describe('ImageBoard Application Tests', () => {
 
-const loginAs = async (user) => {
-    const agent = request.agent(app);
-    await agent.post("/user/login").send({ email: user.email, password: "1" });
-    return agent;
-};
-
-describe("Access control tests", () => {
-    test("Unauthorized user should be redirected from protected routes", async () => {
-        const res = await request(app).get("/post/diagram");
-        expect(res.status).toBe(302); // Redirect to login
+    // Тест 1: Неавторизованный пользователь на главной странице
+    it('should display the home page for unauthenticated users', async () => {
+        const response = await request(app).get('/');
+        expect(response.status).toBe(200);
     });
 
-    test("User should NOT access admin-only routes", async () => {
-        const agent = await loginAs(users.user);
-        const res = await agent.get("/post/diagram");
-        expect(res.status).toBe(500); // No access
+    // Тест 2: Неавторизованный пользователь пытается перейти на /post/diagram
+    it('should redirect unauthenticated users to /user/login when accessing /post/diagram', async () => {
+        const response = await request(app).get('/post/diagram');
+        expect(response.status).toBe(302); // Перенаправление
+        expect(response.headers.location).toBe('/user/login');
     });
 
-    test("Editor should NOT access admin-only routes", async () => {
-        const agent = await loginAs(users.editor);
-        const res = await agent.get("/post/diagram");
-        expect(res.status).toBe(500); // No access
+    // Тест 3: Авторизованный пользователь (email:"1@1", password:"1") пытается перейти на /post/diagram
+    it('should return "нет доступа" for authenticated user with email "1@1"', async () => {
+        const agent = request.agent(app);
+
+        // Логин пользователя
+        await agent.post('/user/login').send({ email: '1@1', password: '1' }).expect(302); // Проверяем перенаправление
+        const response = await agent.get('/post/diagram').expect(500);
+        expect(response.body.message).toBe('нет доступа');
     });
 
-    test("Admin should access admin-only routes", async () => {
-        const agent = await loginAs(users.admin);
-        const res = await agent.get("/post/diagram");
-        expect(res.status).toBe(200); // Success
+    // Тест 4: Авторизованный пользователь (email:"2@1", password:"1") пытается перейти на /post/diagram
+    it('should return "нет доступа" for authenticated user with email "2@1"', async () => {
+        const agent = request.agent(app);
+
+        // Логин пользователя
+        await agent.post('/user/login').send({ email: '2@1', password: '1' }).expect(302); // Проверяем перенаправление
+        const response = await agent.get('/post/diagram').expect(500);
+        expect(response.body.message).toBe('нет доступа');
+    });
+
+    // Тест 5: Авторизованный пользователь (email:"3@1", password:"1") успешно переходит на /post/diagram
+    it('should load the diagram page for authenticated user with email "3@1"', async () => {
+        const agent = request.agent(app);
+
+        // Логин пользователя
+        await agent.post('/user/login').send({ email: '3@1', password: '1' }).expect(302); // Проверяем перенаправление
+        const response = await agent.get('/post/diagram').expect(200);
     });
 });

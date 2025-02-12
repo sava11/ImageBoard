@@ -53,7 +53,7 @@ exports.savePostData = async (req, res) => {
 };
 
 exports.uploadPost = (req, res) => {
-    res.render("upload", {
+    res.render("upload.hbs", {
         userName: req.session.user ? req.session.user.login : "Войти",
         isAuthenticated: !!req.session.user, // true, если пользователь вошёл
     }); // Отображаем форму загрузки

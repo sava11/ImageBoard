@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
 
 exports.loginForm = (req, res) => {
     if (!req.session.user) {
-        res.render("auth/login", { documentName: "Вход" });
+        res.render("auth/login.hbs", { documentName: "Вход" });
     } else {
         res.redirect(`/user/${req.session.user.id}`);
     }
@@ -56,9 +56,7 @@ exports.isAuthenticated = (req, res, next) => {
 };
 exports.userHasStatus = (req, res, next) => {
     pool.query(`SELECT id,login,status FROM users WHERE id=${req.session.user.id} and status>2`, async (err, results) => {
-
         if (err || results.length === 0) {
-            console.error(`no access to ${req.session.user.id}`);
             res.status(500).json({message:"нет доступа"});
         }else{
             next();
@@ -88,7 +86,7 @@ exports.user = (req, res) => {
                 const [isAdmin] = await pool.promise().execute(`select id from users where id =${req.session.user.id} and status=3`);
                 dict.isAdmin=isAdmin[0]?true:false;
             }
-            res.render("profile/profile", dict);
+            res.render("profile/profile.hbs", dict);
 
         });
 
@@ -96,10 +94,10 @@ exports.user = (req, res) => {
 
 exports.userSettingsForm = (req, res) => {
     if (!req.session.user) {
-        res.render("auth/login", { documentName: "Вход" });
+        res.render("auth/login.hbs", { documentName: "Вход" });
     }
     const userName = req.session.user ? req.session.user.login : "Войти";
-    res.render("profile/settings", { 
+    res.render("profile/settings.hbs", { 
         documentName: "Настройки",
         user:req.session.user,
         userName: userName,
