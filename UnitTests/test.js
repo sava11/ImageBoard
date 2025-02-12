@@ -1,6 +1,5 @@
 const request = require('supertest');
 const app = require('../app'); // Подключаем приложение Express
-const bcrypt = require('bcrypt');
 
 describe('ImageBoard Application Tests', () => {
 
