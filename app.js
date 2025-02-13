@@ -60,7 +60,7 @@ if (require.main === module) {
             console.log(rows[0].greeting); // Выведет: привет мир!
 
             // Выполняем простой запрос к базе данных
-            const [name] = await pool.promise().execute("SELECT login where id=3;");
+            const [name] = await pool.promise().execute("SELECT login from users where id=4;");
 
             // Выводим результат запроса
             console.log(name[0].login); // Выведет: привет мир!
