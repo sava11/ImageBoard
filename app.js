@@ -82,7 +82,7 @@ if (require.main === module) {
     }
 
     // Запускаем функцию
-    executeSqlScript();
+    await executeSqlScript();
     const pool = require("./dataBase/db");
 
     async function checkDatabaseConnection() {
