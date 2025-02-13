@@ -49,6 +49,40 @@ module.exports = app;
 
 if (require.main === module) {
     app.listen(port, () => console.log(`Сервер запущен на порту: ${port} и ожидает подключений...`));
+    const fs = require('fs');
+    const mysql = require('mysql2/promise');
+
+    // Путь к файлу с SQL-скриптом
+    const sqlFilePath = './create_site.sql'; // Убедитесь, что файл находится в той же папке
+
+    // Настройки подключения к базе данных
+    const dbConfig = {
+        host: 'localhost',
+        user: 'your_username',
+        password: 'your_password',
+        multipleStatements: true // Разрешаем выполнение нескольких запросов
+    };
+
+    async function executeSqlScript() {
+        try {
+            // Создаем соединение с базой данных
+            const connection = await mysql.createConnection(dbConfig);
+
+            // Читаем содержимое SQL-файла
+            const sqlScript = fs.readFileSync(sqlFilePath, 'utf8');
+
+            // Выполняем скрипт
+            console.log('Выполнение SQL-скрипта...');
+            await connection.execute(sqlScript);
+
+            console.log('SQL-скрипт успешно выполнен!');
+        } catch (error) {
+            console.error('Ошибка выполнения SQL-скрипта:', error.message);
+        }
+    }
+
+    // Запускаем функцию
+    executeSqlScript();
     const pool = require("./dataBase/db");
 
     async function checkDatabaseConnection() {
