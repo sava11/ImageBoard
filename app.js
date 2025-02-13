@@ -20,7 +20,7 @@ app.set('views', path.resolve(__dirname, 'views')); // Укажите путь �
 app.set('view engine', 'hbs');
 app.set('trust proxy', 1);
 
-const key=process.env.SECRET_KEY;
+const key = process.env.SECRET_KEY;
 app.use(cookieParser(key)); // Установите секретный ключ для подписанных кук
 app.use(session({
     secret: key,
@@ -49,4 +49,21 @@ module.exports = app;
 
 if (require.main === module) {
     app.listen(port, () => console.log(`Сервер запущен на порту: ${port} и ожидает подключений...`));
+    const pool = require("../dataBase/db");
+
+    async function checkDatabaseConnection() {
+        try {
+            // Выполняем простой запрос к базе данных
+            const [rows] = await pool.promise().execute("SELECT 'привет мир!' AS greeting");
+
+            // Выводим результат запроса
+            console.log(rows[0].greeting); // Выведет: привет мир!
+        } catch (error) {
+            // Обработка ошибок
+            console.error("Ошибка подключения к базе данных:", error.message);
+        }
+    }
+
+    // Вызов функции
+    checkDatabaseConnection();
 }

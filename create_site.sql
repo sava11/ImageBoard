@@ -458,7 +458,7 @@ DELIMITER ;
 
 
 
-
+/*
 select * from users;
 select * from trusted_tags_connections;
 select * from trusted_tags;
@@ -559,3 +559,4 @@ select id,date from images where date between '2024-01-01' and '2025-12-31';
 
 call search_images(0,100,'','','',0,curdate(),date_add(CURDATE(), INTERVAL 1 day));
 
+*/
