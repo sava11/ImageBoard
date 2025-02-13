@@ -49,7 +49,7 @@ module.exports = app;
 
 if (require.main === module) {
     app.listen(port, () => console.log(`Сервер запущен на порту: ${port} и ожидает подключений...`));
-    const pool = require("../dataBase/db");
+    const pool = require("./dataBase/db");
 
     async function checkDatabaseConnection() {
         try {
