@@ -34,7 +34,7 @@
   </style>
 </head>
 
-<body {{#if voted}}onload="set_actions()" {{/if}}>
+<body {{#if voted}}onload="set_actions()"{{/if}}>
   <div class="page-container">
     <div class="header">
       <a class="logo" href="/">
@@ -50,12 +50,8 @@
           <img src="/imgs/settings.svg" width="24px">
         </button>
         <div class="dropdown-menu hidden">
-          <a href="/user/settings">
-            <div class="menu-item"><span>настройки</span></div>
-          </a>
-          <a href="/post/upload">
-            <div class="menu-item"><span>загрузить</span></div>
-          </a>
+          <a href="/user/settings"><div class="menu-item"><span>настройки</span></div></a>
+          <a href="/post/upload"><div class="menu-item"><span>загрузить</span></div></a>
           <button id="user-exit" class="menu-item">выйти</button>
         </div>
         <script src="/js/elements/header.js"></script>
@@ -64,19 +60,11 @@
     </div>
 
     <div class="content">
-      <!-- Верхняя панель -->
-      <!-- <div>
-      <a class="adv-image" id="advertisement-image-top-a" style="width:500px;" href="" target="_blank" title="">
-        <img id="advertisement-image-top" src="" alt="Advertisement">
-      </a>
-      <script src="/js/get-random-adv.js"></script>
-    </div> -->
-
       <div class="flow-container">
         <div class="flow-item">
           <img src="/image/{{documentId}}" style="width:40vw;" alt="Изображение"><br>
           <div class="post-actions">
-            <button class="like-button " id="likeButton">
+            <button class="like-button" id="likeButton">
               <span class="like-icon">👍</span>
               <span id="likeCount">{{likes}}</span>
             </button>
@@ -102,7 +90,7 @@
             </script>
             {{/if}}
             {{#if isOwner}}
-            <button onclick="editPost()">изменить</button>
+            {{!-- <button onclick="editPost()">изменить</button> --}}
             <button onclick="removePost()">удалить</button>
             <script>
               function removePost() {
@@ -221,7 +209,6 @@
             {{description}}
           </div>
         </div>
-
         <div class="flow-item">
           <div class="tag-container">
             {{#each tags}}
@@ -240,7 +227,7 @@
       </div>
       <div class="footer-item">
         <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
-        <a href="mailto:ivan.ivanov@example.com">Sovergon15@gmail.com</a>
+        <a href="mailto:Sovergon15@gmail.com">Sovergon15@gmail.com</a>
       </div>
       <div class="footer-item">
         <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
@@ -251,18 +238,17 @@
   {{#if voted}}
   <script>
     function set_actions() {
-      if ({{ postAction }} == 0) {
-      dislikeButton.classList.toggle("active");
-      likeButton.classList.remove("active");
-    }
-    if ({{ postAction }}== 1) {
-      likeButton.classList.toggle("active");
-      dislikeButton.classList.remove("active");
-    }
+      if ({{postAction}} === 0) {
+        dislikeButton.classList.add("active");
+        likeButton.classList.remove("active");
+      }
+      if ({{postAction}} === 1) {
+        likeButton.classList.add("active");
+        dislikeButton.classList.remove("active");
+      }
     }
   </script>
   {{/if}}
-
 </body>
 
 </html>

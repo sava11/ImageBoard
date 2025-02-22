@@ -44,12 +44,12 @@ CREATE TABLE trusted_tags(
 	primary key(id)
 );ALTER TABLE trusted_tags AUTO_INCREMENT=0;
 
-drop table if exists untrusted_tags;
-CREATE TABLE untrusted_tags(
-	id int unsigned auto_increment not null,
-	name varchar(256) not null,
-	primary key(id)
-);ALTER TABLE untrusted_tags AUTO_INCREMENT=0;
+-- drop table if exists untrusted_tags;
+-- CREATE TABLE untrusted_tags(
+-- 	id int unsigned auto_increment not null,
+-- 	name varchar(256) not null,
+-- 	primary key(id)
+-- );ALTER TABLE untrusted_tags AUTO_INCREMENT=0;
 
 drop table if exists images;
 CREATE TABLE images(
@@ -110,15 +110,15 @@ CREATE TABLE advertisements(
 	REFERENCES users(id)
 );ALTER TABLE users AUTO_INCREMENT=0;
 
-drop table if exists untrusted_tags_connections;
-CREATE TABLE untrusted_tags_connections(
-	image_id varchar(256) not NULL,
-	tag_id int unsigned auto_increment not null,
-	FOREIGN KEY (image_id)
-	REFERENCES images(id),
-	FOREIGN KEY (tag_id)
-	REFERENCES untrusted_tags(id)
-);
+-- drop table if exists untrusted_tags_connections;
+-- CREATE TABLE untrusted_tags_connections(
+-- 	image_id varchar(256) not NULL,
+-- 	tag_id int unsigned auto_increment not null,
+-- 	FOREIGN KEY (image_id)
+-- 	REFERENCES images(id),
+-- 	FOREIGN KEY (tag_id)
+-- 	REFERENCES untrusted_tags(id)
+-- );
 
 INSERT INTO user_statuses(name) values 
 ("пользователь"),
@@ -213,12 +213,12 @@ INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES
 ("0", 7)
 ;
 
-INSERT INTO untrusted_tags_connections (image_id, tag_id) VALUES
-("fe6bf79b466ab316e3e105033795c7f4", 1),
-("fe6bf79b466ab316e3e105033795c7f4", 2),
-("539d4c48e4984a7b368ba75d252d3ec9", 1),
-("539d4c48e4984a7b368ba75d252d3ec9", 3)
-;
+-- INSERT INTO untrusted_tags_connections (image_id, tag_id) VALUES
+-- ("fe6bf79b466ab316e3e105033795c7f4", 1),
+-- ("fe6bf79b466ab316e3e105033795c7f4", 2),
+-- ("539d4c48e4984a7b368ba75d252d3ec9", 1),
+-- ("539d4c48e4984a7b368ba75d252d3ec9", 3)
+-- ;
 
 
 INSERT INTO advertisements (adder, `date`, adv_url_link, img_url_link) values
