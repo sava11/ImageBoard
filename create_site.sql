@@ -148,16 +148,17 @@ INSERT INTO trusted_tags (name) VALUES
 ("ORI"),
 ("референс");
 
-INSERT INTO untrusted_tags (name) VALUES
+/*INSERT INTO untrusted_tags (name) VALUES
 ("природа кавказа"),
 ("тест загрузки данных"),
-("создано в 2024 году");
+("создано в 2024 году");*/
 
 INSERT INTO images (id, user_id, `date`, ext,  approver, status, `desc`) VALUES
-("fe6bf79b466ab316e3e105033795c7f4", 1, NOW(), "jpg", 3, 2, "Красивый вид на горы"),
-("539d4c48e4984a7b368ba75d252d3ec9", 2,date_add(NOW(), INTERVAL 1 minute), "svg", 3, 2, "Красивый вид на ORI"),
-("0", 1, date_add(NOW(), INTERVAL 2 day), "jpg", 3, 2, "Красивый вид на ORI"),
-("89d5436984410ba572d7b8afcec56c46", 3, date_add(NOW(), INTERVAL 3 day), "svg", 3, 2, "")/*,
+("0", 1, date_add(NOW(), INTERVAL -2 day), "jpg", 3, 2, "Красивый вид на ORI"),
+("1", 3, date_add(NOW(), INTERVAL -3 day), "svg", 3, 2, ""),
+("2", 2,date_add(NOW(), INTERVAL -1 minute), "svg", 3, 2, "Красивый вид на ORI"),
+("3", 3, date_add(NOW(), INTERVAL -3 day), "svg", 3, 2, ""),
+("4", 1, NOW(), "jpg", 3, 2, "Красивый вид на горы")/*
 ("539d4c48e4984a7b368ba75d252d3ec6", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec5", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec4", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
@@ -201,23 +202,23 @@ INSERT INTO images (id, user_id, `date`, ext,  approver, status, `desc`) VALUES
 ;
 
 INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES
-("fe6bf79b466ab316e3e105033795c7f4", 1),
-("fe6bf79b466ab316e3e105033795c7f4", 2),
-("fe6bf79b466ab316e3e105033795c7f4", 3),
-("539d4c48e4984a7b368ba75d252d3ec9", 2),
-("539d4c48e4984a7b368ba75d252d3ec9", 3),
-("539d4c48e4984a7b368ba75d252d3ec9", 4),
-("539d4c48e4984a7b368ba75d252d3ec9", 6),
+("4", 1),
+("4", 2),
+("4", 3),
+("2", 2),
+("2", 3),
+("2", 4),
+("2", 6),
 ("0", 6),
 ("0", 3),
 ("0", 7)
 ;
 
 -- INSERT INTO untrusted_tags_connections (image_id, tag_id) VALUES
--- ("fe6bf79b466ab316e3e105033795c7f4", 1),
--- ("fe6bf79b466ab316e3e105033795c7f4", 2),
--- ("539d4c48e4984a7b368ba75d252d3ec9", 1),
--- ("539d4c48e4984a7b368ba75d252d3ec9", 3)
+-- ("4", 1),
+-- ("4", 2),
+-- ("2", 1),
+-- ("2", 3)
 -- ;
 
 
@@ -456,23 +457,23 @@ END $$
 
 DELIMITER ;
 
-
+call search_images(0,100,'','','',0,'2020-01-01',date_add(CURDATE(), INTERVAL 1 day));
 
 /*
 select * from users;
 select * from trusted_tags_connections;
 select * from trusted_tags;
 select * from untrusted_tags;
-call getImageDetails("fe6bf79b466ab316e3e105033795c7f4");
+call getImageDetails("4");
 select * from images ;
-call makeVote(2,"fe6bf79b466ab316e3e105033795c7f4",1);
+call makeVote(2,"4",1);
 call makeVote(2,"0",1);
-call makeVote(4,"fe6bf79b466ab316e3e105033795c7f4",0);
-call makeVote(3,"fe6bf79b466ab316e3e105033795c7f4",0);
+call makeVote(4,"4",0);
+call makeVote(3,"4",0);
 call makeVote(4,"0",0);
 call makeVote(3,"0",1);
-call makeVote(3,"539d4c48e4984a7b368ba75d252d3ec9",1);
-call makeVote(4,"539d4c48e4984a7b368ba75d252d3ec9",1);
+call makeVote(3,"2",1);
+call makeVote(4,"2",1);
 SELECT * FROM votes;
 SELECT * FROM advertisements;
 SELECT name FROM trusted_tags WHERE name LIKE CONCAT('%', "с", '%');
@@ -521,7 +522,7 @@ LEFT JOIN
 LEFT JOIN 
     users u ON i.user_id = u.id
 WHERE 
-    i.id = "fe6bf79b466ab316e3e105033795c7f4"
+    i.id = "4"
 GROUP BY 
     i.id, i.ext, i.status, u.login, u.id;
 call search_images(0,100,'','','',0,'2020-01-01',date_add(CURDATE(), INTERVAL 1 day));
