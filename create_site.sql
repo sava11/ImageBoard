@@ -148,16 +148,17 @@ INSERT INTO trusted_tags (name) VALUES
 ("ORI"),
 ("референс");
 
-INSERT INTO untrusted_tags (name) VALUES
+/*INSERT INTO untrusted_tags (name) VALUES
 ("природа кавказа"),
 ("тест загрузки данных"),
-("создано в 2024 году");
+("создано в 2024 году");*/
 
 INSERT INTO images (id, user_id, `date`, ext,  approver, status, `desc`) VALUES
-("fe6bf79b466ab316e3e105033795c7f4", 1, NOW(), "jpg", 3, 2, "Красивый вид на горы"),
-("539d4c48e4984a7b368ba75d252d3ec9", 2,date_add(NOW(), INTERVAL 1 minute), "svg", 3, 2, "Красивый вид на ORI"),
-("0", 1, date_add(NOW(), INTERVAL 2 day), "jpg", 3, 2, "Красивый вид на ORI"),
-("89d5436984410ba572d7b8afcec56c46", 3, date_add(NOW(), INTERVAL 3 day), "svg", 3, 2, "")/*,
+("4", 1, NOW(), "png", 3, 2, "Красивый вид на горы"),
+("1", 2,date_add(NOW(), INTERVAL -1 minute), "svg", 3, 2, "Красивый вид на ORI"),
+("0", 1, date_add(NOW(), INTERVAL -2 day), "jpg", 3, 2, "Красивый вид на ORI"),
+("3", 1, date_add(NOW(), INTERVAL -2 day), "svg", 3, 2, "Красивый вид на ORI"),
+("2", 3, date_add(NOW(), INTERVAL -3 day), "svg", 3, 2, "")/*,
 ("539d4c48e4984a7b368ba75d252d3ec6", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec5", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec4", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
@@ -201,13 +202,13 @@ INSERT INTO images (id, user_id, `date`, ext,  approver, status, `desc`) VALUES
 ;
 
 INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES
-("fe6bf79b466ab316e3e105033795c7f4", 1),
-("fe6bf79b466ab316e3e105033795c7f4", 2),
-("fe6bf79b466ab316e3e105033795c7f4", 3),
-("539d4c48e4984a7b368ba75d252d3ec9", 2),
-("539d4c48e4984a7b368ba75d252d3ec9", 3),
-("539d4c48e4984a7b368ba75d252d3ec9", 4),
-("539d4c48e4984a7b368ba75d252d3ec9", 6),
+("2", 1),
+("2", 2),
+("2", 3),
+("1", 2),
+("1", 3),
+("1", 4),
+("1", 6),
 ("0", 6),
 ("0", 3),
 ("0", 7)
@@ -455,7 +456,6 @@ BEGIN
 END $$
 
 DELIMITER ;
-
 
 
 /*

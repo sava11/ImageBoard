@@ -43,7 +43,7 @@
         <div class="content">
             <h1>Загрузка изображения <button id="uploadBtn">сохранить</button> <button
                     id="releaseBtn">опубликовать</button></h1>
-            <div class="flex-container">
+            <div class="flow-container">
                 <div class="flex-item">
                     <div class="drop-area" style="width:500px; height:300px;" id="drop-area">
                         <p>Перетащите изображение сюда или нажмите для выбора</p>
@@ -54,8 +54,8 @@
                     <textarea name="description" id="description" cols="60" rows="4" cols="calc(15 * 5)"
                         style="resize: vertical;"></textarea><br>
                 </div>
-                <div class="flex-item">
-                    <div class="tag-container-wrapper" style="position: relative;">
+                <div class="flow-item">
+                    <div class="tag-container-wrapper">
                         <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
                             oninput="searchTags(event)" onkeydown="navigateDropdown(event)" />
                         <div id="tag-dropdown" class="tag-dropdown"></div>
