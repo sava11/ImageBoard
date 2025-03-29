@@ -27,30 +27,24 @@ exports.savePostData = async (req, res) => {
     }
 
     const userId = req.session.user.id;
-    const imageId = path.basename(req.file.filename, path.extname(req.file.filename));
+    const imageId = path.basename(req.file.filename,path.extname(req.file.filename));
     const fileExt = path.extname(req.file.filename).slice(1);
-
+    console.error(imageId);
+    console.error(imageId, userId, fileExt, status, "\"", description, "\"");
     try {
-        const connection = await pool.promise().getConnection();
-        await connection.beginTransaction();
-
-        await connection.execute(
+        pool.execute(
             `INSERT INTO images (id, user_id, date, ext, status, \`desc\`) VALUES (?, ?, NOW(), ?, ?, ?)`,
-            [imageId, userId, fileExt, status, description || null]
+            [imageId, userId, fileExt, status, description]
         );
-
-        if (tags) {
+        if (tags && tags.length > 0) {
             const tagIds = JSON.parse(tags);
-            const tagValues = tagIds.map(tagId => [imageId, tagId]);
-            await connection.query(
-                `INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES ?`,
-                [tagValues]
-            );
+            for (const tagId of tagIds) {
+                await pool.promise().execute(
+                    `INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES (?, ?)`,
+                    [imageId, tagId]
+                );
+            }
         }
-
-        await connection.commit();
-        connection.release();
-
         res.status(200).json({ message: "Изображение сохранено.", id: imageId });
     } catch (err) {
         console.error(err.message);

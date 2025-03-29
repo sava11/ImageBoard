@@ -457,8 +457,6 @@ END $$
 
 DELIMITER ;
 
-call search_images(0,100,'','','',0,'2020-01-01',date_add(CURDATE(), INTERVAL 1 day));
-
 /*
 select * from users;
 select * from trusted_tags_connections;
