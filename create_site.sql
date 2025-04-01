@@ -158,7 +158,7 @@ INSERT INTO images (id, user_id, `date`, ext,  approver, status, `desc`) VALUES
 ("1", 3, date_add(NOW(), INTERVAL -3 day), "svg", 3, 2, ""),
 ("2", 2,date_add(NOW(), INTERVAL -1 minute), "svg", 3, 2, "Красивый вид на ORI"),
 ("3", 3, date_add(NOW(), INTERVAL -3 day), "svg", 3, 2, ""),
-("4", 1, NOW(), "jpg", 3, 2, "Красивый вид на горы")/*
+("4", 1, NOW(), "png", 3, 2, "Красивый вид на горы")/*
 ("539d4c48e4984a7b368ba75d252d3ec6", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec5", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
 ("539d4c48e4984a7b368ba75d252d3ec4", 2, Now(), "svg", 3, 2, "Красивый вид на ORI"),
