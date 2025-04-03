@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Редактировать изображение {{documentId}}</title>
+  <link rel="shortcut icon" href="/imgs/ori_ico1.svg" type="image/x-icon">
+  <link rel="stylesheet" href="/css/vars.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/container.css" type="text/css" />
+  <link rel="stylesheet" href="/css/containers/tag container.css" type="text/css" />
+  <link rel="stylesheet" href="/css/test.css" type="text/css" />
+  <style>
+    img {
+      pointer-events: none;
+    }
+
+    .description {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
+    }
+  </style>
+  <style>
+    img {
+      pointer-events: none;
+    }
+
+    .description {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-container">
+    <header class="header">
+      <a class="logo" href="/">
+        <img src="/imgs/ori_ico1.svg" alt="Logo">
+        <span>artX</span>
+      </a>
+      <div class="user">
+        <a href="/user/login"><span>{{userName}}</span></a>
+        {{#if isAuthenticated}}
+        <button class="menu-button">
+          <img src="/imgs/settings.svg" width="24" alt="Настройки">
+        </button>
+        <div class="dropdown-menu hidden">
+          <a href="/user/settings" class="menu-item">Настройки</a>
+          <a href="/post/upload" class="menu-item">Загрузить</a>
+          <button id="user-exit" class="menu-item">Выйти</button>
+        </div>
+        <script src="/js/elements/header.js"></script>
+        {{/if}}
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="flow-container">
+        <div class="flow-item">
+          <img src="/image/{{documentId}}" style="width:40vw;" alt="Изображение">
+          <div class="description">
+            <h2>Описание:</h2>
+            <textarea id="description" name="description" cols="60" rows="4"
+              style="resize: vertical;">{{description}}</textarea>
+          </div>
+          <button onclick="saveChanges()">Сохранить изменения</button>
+        </div>
+        <div class="flow-item">
+          <div class="tag-container-wrapper" style="position: relative; width: 16rem;">
+            <input type="search" id="tag-input" class="tag-input" placeholder="Добавить тег..."
+              oninput="searchTags(event)" onkeydown="navigateDropdown(event)">
+            <div id="tag-dropdown" class="tag-dropdown"></div>
+          </div>
+          <div id="tag-list" class="tag-container" style="border: none;">
+            {{#each tags}}
+            <div id="tag-id-{{this.id}}" class="tag">
+              <div class="name">{{this.name}}
+              </div>
+              <span class="close" onclick="removeTag({{this.id}})">&times;</span>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-item">
+        <img src="/imgs/author-icon.svg" alt="Автор" class="footer-icon">
+        <span>Емельяненко Савелий</span>
+      </div>
+      <div class="footer-item">
+        <img src="/imgs/ori_ico1.svg" alt="Email" class="footer-icon">
+        <a href="mailto:Sovergon15@gmail.com">Sovergon15@gmail.com</a>
+      </div>
+      <div class="footer-item">
+        <img src="/imgs/about-icon.svg" alt="О проекте" class="footer-icon">
+        <a href="/about">О проекте</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    let selectedTags = [];
+    let dropdownIndex = -1;
+
+    async function searchTags(event) {
+      const query = event.target.value.trim();
+      const dropdown = document.getElementById("tag-dropdown");
+      //if(dropdown.style.display == "none"){
+
+      //}
+      if (!query) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = '';
+        event.target.style.removeProperty("border-bottom-left-radius");
+        event.target.style.removeProperty("border-bottom-right-radius");
+        return;
+      }
+
+      const response = await fetch(`/image/tags/search?q=${query}`);
+      const results = await response.json();
+
+      if (results.length === 0) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = '';
+        event.target.style.removeProperty("border-bottom-left-radius");
+        event.target.style.removeProperty("border-bottom-right-radius");
+        return;
+      }
+
+      dropdown.style.display = "block";
+      dropdown.innerHTML = results
+        .map((tag, index) => `<div data-index="${index}" onclick="selectTag('${tag.id}', '${tag.name}')">${tag.name}</div>`)
+        .join('');
+
+      event.target.style["border-bottom-left-radius"] = "0px"
+      event.target.style["border-bottom-right-radius"] = "0px"
+      dropdownIndex = -1; // Reset index
+    }
+
+    function navigateDropdown(event) {
+      const dropdown = document.getElementById("tag-dropdown");
+      const items = dropdown.querySelectorAll('div');
+
+      if (items.length === 0) return;
+
+      if (event.key === "ArrowDown") {
+        dropdownIndex = (dropdownIndex + 1) % items.length;
+        updateActiveItem(items);
+      } else if (event.key === "ArrowUp") {
+        dropdownIndex = (dropdownIndex - 1 + items.length) % items.length;
+        updateActiveItem(items);
+      } else if (event.key === "Enter" && dropdownIndex >= 0) {
+        items[dropdownIndex].click();
+      }
+    }
+
+    function updateActiveItem(items) {
+      items.forEach((item, index) => {
+        item.classList.toggle('active', index === dropdownIndex);
+      });
+    }
+
+    function selectTag(tagId, tagName) {
+      if (selectedTags.includes(tagId)) return;
+
+      selectedTags.push(tagId);
+
+      const tagList = document.getElementById("tag-list");
+      const newTag = document.createElement("div");
+      newTag.className = "tag";
+      newTag.id = `tag-id-${tagId}`;
+      newTag.innerHTML = `
+            <div class="name">${tagName}</div> <span class="close" onclick="removeTag('${tagId}')">&times;</span>`;
+      tagList.appendChild(newTag);
+      document.getElementById("tag-dropdown").style.display = "none";
+      const tagInput = document.getElementById("tag-input");
+      tagInput.value = '';
+      tagInput.style.removeProperty("border-bottom-left-radius");
+      tagInput.style.removeProperty("border-bottom-right-radius");
+    }
+
+    function removeTag(tagId) {
+      selectedTags = selectedTags.filter(tag => tag !== tagId);
+
+      const tagList = document.getElementById("tag-list");
+      const tagDiv = document.getElementById(`tag-id-${tagId}`);
+      if (tagDiv) tagList.removeChild(tagDiv);
+    }
+
+    async function saveChanges() {
+      const desc = document.getElementById("description").value;
+      const tagElements = document.querySelectorAll(".tag");
+      const tags = Array.from(tagElements).map(tag => tag.id.replace("tag-id-", ""));
+
+
+      try {
+        const response = await fetch("/post/edit/{{documentId}}", {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ description: desc, tags }),
+          credentials: "include"
+        });
+
+        if (!response.ok) throw new Error("Ошибка при сохранении");
+
+        const data = await response.json();
+        alert("Изменения сохранены!");
+      } catch (error) {
+        console.error(error);
+        alert("Ошибка при сохранении изменений.");
+      }
+    }
+
+
+  </script>
+</body>
+
+</html>

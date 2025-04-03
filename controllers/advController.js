@@ -34,7 +34,7 @@ exports.getAdvertisementImage = (req, res) => {
 
 exports.getRandomAdvertisementImage = async (req, res) => {
     try {
-        const [items] = await pool.promise().execute(`SELECT img_url_link as img_link, adv_url_link as link FROM advertisements WHERE avalible=TRUE;`);
+        const [items] = await pool.promise().execute(`SELECT img_url_link as img_link, adv_url_link as link FROM advertisements WHERE available=TRUE;`);
         const data=items[Math.floor(Math.random()*items.length)];
         res.status(200).json({ data });
     } catch (err) {

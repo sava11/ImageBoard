@@ -24,7 +24,7 @@
                     <span>{{userName}}</span>
                 </a>
                 {{#if isAuthenticated}}
-                <button class="menu-button">
+                <button id="save_changes_button" class="menu-button">
                     <img src="/imgs/settings.svg" width="24px">
                 </button>
                 <div class="dropdown-menu hidden">
@@ -55,7 +55,7 @@
                         style="resize: vertical;"></textarea><br>
                 </div>
                 <div class="flow-item">
-                    <div class="tag-container-wrapper">
+                    <div class="tag-container-wrapper" style="position: relative; width: 16rem;">
                         <input type="search" placeholder="Добавить тег..." class="tag-input" id="tag-input"
                             oninput="searchTags(event)" onkeydown="navigateDropdown(event)" />
                         <div id="tag-dropdown" class="tag-dropdown"></div>
@@ -169,6 +169,7 @@
             const tagDiv = document.getElementById(`tag-id-${tagId}`);
             if (tagDiv) tagList.removeChild(tagDiv);
         }
+        
         function removeTags() {
             selectedTags = [];
 

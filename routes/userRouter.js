@@ -12,8 +12,8 @@ router.get("/settings", userController.isAuthenticated, userController.userSetti
 router.post("/settings", userController.isAuthenticated, userController.userSettings);
 
 router.get("/:id", userController.user);
-router.post("/edit", userController.isAuthenticated, userController.edituser);
-router.post("/delete", userController.isAuthenticated, userController.deleteuser);
+router.post("/edit", userController.isAuthenticated, userController.editUser);
+router.post("/delete/:id", userController.isAuthenticated, userController.deleteUser);
 router.post("/logout", userController.logout);
 
 

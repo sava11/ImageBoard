@@ -51,6 +51,10 @@ async function search(page,sort) {
         if (href) {window.location.href = href;}
       });
     });
+
+    if (images.images.length==0){
+      container.innerHTML="<p>Nothing else</p>"
+    }
   }).catch(err => console.error("Ошибка загрузки изображений:", err));
 }
 search(0,1);

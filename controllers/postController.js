@@ -154,9 +154,96 @@ exports.deletePostById = (req, res) => {
     });
 };
 
-exports.editPostById = (req, res) => {
+exports.showEditPost = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const isAuthenticated = !!req.session.user;
+        if (!isAuthenticated){
+            return res.status(403).json({ message: "Неавторизованный доступ." });
+        }
+        const curUserID = isAuthenticated ? req.session.user.id : 0;
+        const [data] = await pool.promise().execute(
+            `SELECT i.id, i.ext, i.desc,
+            COALESCE(GROUP_CONCAT(DISTINCT t.id ORDER BY t.id ASC), '') AS tag_ids,
+            COALESCE(GROUP_CONCAT(DISTINCT t.name ORDER BY t.id ASC), '') AS tags
+            FROM images i
+            LEFT JOIN trusted_tags_connections tc ON i.id = tc.image_id
+            LEFT JOIN trusted_tags t ON tc.tag_id = t.id
+            WHERE i.id = ? GROUP BY i.id;`,
+            [id]
+        );
+        const [isEditorData] = await pool.promise().execute(
+            `SELECT id from users where id = ? and status=2`,
+            [curUserID]
+        );
+        if (!data.length) return res.status(404).send("Пост не найден");
+        const post = data[0];
+        const isOwner = isAuthenticated && curUserID === post.author_id || isEditorData.length;
 
+        res.render("edit_post.hbs", {
+            documentId: post.id,
+            userName: req.session.user ? req.session.user.login : "Войти",
+            curUserID,
+            isAuthenticated,
+            isOwner,
+            isNotOwner: !isOwner,
+            imageUrl: post.ext,
+            description: post.desc,
+            tags: post.tags ? post.tags.split(',').map((name, i) => ({ id: post.tag_ids.split(',')[i], name })) : []
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Ошибка сервера");
+    }
 };
+
+exports.editPostById = async (req, res) => {
+    const { id } = req.params;
+    const { description, tags } = req.body;
+    const userId = req.session.user ? req.session.user.id : null;
+
+    if (!userId) {
+        return res.status(403).json({ message: "Неавторизованный доступ." });
+    }
+
+    try {
+        const [post] = await pool.promise().execute(
+            `SELECT user_id FROM images WHERE user_id = (select id from users where status=2 and id=3) or user_id=3;`,
+        );
+
+        if (post[0].user_id !== userId) {
+            return res.status(403).json({ message: "Нет прав на редактирование." });
+        }
+
+        if (post.length === 0) {
+            return res.status(404).json({ message: "Пост не найден." });
+        }
+        await pool.promise().execute(
+            `UPDATE images SET \`desc\` = ? WHERE id = ?`,
+            [description, id]
+        );
+
+        await pool.promise().execute(
+            `DELETE FROM trusted_tags_connections WHERE image_id = ?`,
+            [id]
+        );
+
+        if (tags && tags.length > 0) {
+            for (const tagId of tags) {
+                await pool.promise().execute(
+                    `INSERT INTO trusted_tags_connections (image_id, tag_id) VALUES (?, ?)`,
+                    [id, tagId]
+                );
+            }
+        }
+
+        res.status(200).json({ message: "Пост обновлён." });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Ошибка при обновлении поста." });
+    }
+};
+
 
 exports.download = (req, res) => {
     const { id } = req.params;

@@ -52,10 +52,8 @@
                 <img id="advertisement-image-top" src="" alt="Advertisement"></a>
             <script src="/js/get-random-adv.js"></script>
         </div>-->
-            <div style="padding-bottom: 1rem;">Имя пользователя: {{user.login}}</div>
-            {{!-- <div class="flex-container">
-                <div class="flex-item">Имя пользователя: {{user.login}}</div>
-            </div> --}}
+            <div style="padding-bottom: 1rem;">Имя пользователя: {{user.login}} 
+                {{#if isEditor}}<button id="remove">удалить профиль</button>{{/if}}</div>
             <div id="card-container" class="card-container">
                 {{#if displayUpload}}
                 <a class="card-item" href="/post/upload">
@@ -107,6 +105,31 @@
             })
             .catch(err => console.error("Ошибка загрузки изображений:", err));
     </script>
+    {{#if isEditor}}
+    <script>
+        document.getElementById("remove").addEventListener("click", async () => {
+            if (!confirm("Вы уверены, что хотите удалить профиль?")) return;
+
+            try {
+                const response = await fetch("/user/delete/{{user.id}}", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (response.ok) {
+                    alert("профиль удалён.");
+                    window.location.href = "/"; // Перенаправление на главную
+                } else {
+                    const error = await response.json();
+                    alert(`Ошибка: ${error.message}`);
+                }
+            } catch (err) {
+                console.error("Ошибка при удалении профиля:", err);
+                alert("Произошла ошибка при удалении профиля.");
+            }
+        });
+    </script>
+    {{/if}}
 </body>
 
 </html>

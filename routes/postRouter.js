@@ -41,9 +41,13 @@ router.get("/delete/:id",
     userController.isAuthenticated,
     postController.deletePostById
 );
-router.get("/edit/:id",
+router.post("/edit/:id",
     userController.isAuthenticated,
     postController.editPostById
+);
+router.get("/edit/:id",
+    userController.isAuthenticated,
+    postController.showEditPost
 );
 router.get("/download/:id",
     userController.isAuthenticated,

@@ -1,7 +1,6 @@
 fetch('/image/from-user/{{ user.id }}')
   .then(response => response.json())
   .then(data => {
-    console.log(data);
     //style="object-position: -${item.cut_pos_x}px ${item.cut_pos_y}px;" />
     const container = document.getElementById("tag-container");
     data.images.forEach(item => {

@@ -1,7 +1,6 @@
 const pool = require("../dataBase/db");
 const path = require("path");
 const fs = require("fs");
-console.log(process.env.UPLOAD_DIR);
 const uploadFolder = path.join(__dirname, "../", process.env.UPLOAD_DIR);
 exports.getImageById = async (req, res) => {
     const { id } = req.params;
@@ -19,11 +18,6 @@ exports.getImageById = async (req, res) => {
         res.status(404).json({ message: "Изображение не найдено." });
     }
 };
-
-exports.getAuthorAnalitic=async (req,res)=>{
-    const {userId}=req.params;
-    // pool.query("")
-}
 
 // Получить все изображения с их тегами и пользователями
 exports.getSimpleImages = async (req, res) => {

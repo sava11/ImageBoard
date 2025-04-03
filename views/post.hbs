@@ -90,7 +90,7 @@
             </script>
             {{/if}}
             {{#if isOwner}}
-            {{!-- <button onclick="editPost()">изменить</button> --}}
+            <button onclick="editPost()">изменить</button>
             <button onclick="removePost()">удалить</button>
             <script>
               function removePost() {
@@ -102,19 +102,20 @@
                   .catch(err => console.error("Ошибка удаления", err));
               }
               function editPost() {
-                fetch("/post/edit/{{documentId}}")
+                window.location.replace("/post/edit/{{documentId}}")
+                {{!-- fetch("/post/edit/{{documentId}}")
                   .then(response => response.json())
                   .then(data => {
                     window.location.replace("/user/{{author_id}}")
                   })
-                  .catch(err => console.error("Ошибка редактирования", err));
+                  .catch(err => console.error("Ошибка редактирования", err)); --}}
 
               }
             </script>
             {{/if}}
+            автор: <a href="/user/{{author_id}}">{{author_name}}</a>
           </div>
           {{#if isNotOwner}}
-          автор: <a href="/user/{{author_id}}">{{author_name}}</a>
           <script>
             const likeButton = document.getElementById("likeButton");
             const dislikeButton = document.getElementById("dislikeButton");
@@ -137,7 +138,7 @@
               // Функция для отправки голосов
               async function handleVote(vote) {
                 try {
-                  const response = await fetch("/post/vote", {
+                  const response = await fetch("/post/edit", {
                     method: "POST",
                     headers: {
                       Accept: "application/json",
