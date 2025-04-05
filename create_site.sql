@@ -204,6 +204,3 @@ BEGIN
 END //
 
 DELIMITER ;
-
-SELECT * FROM users;
-SELECT user_id FROM images WHERE user_id = (select id from users where status=2 and id=3) or user_id=3;
