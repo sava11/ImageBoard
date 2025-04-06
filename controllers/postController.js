@@ -29,8 +29,6 @@ exports.savePostData = async (req, res) => {
     const userId = req.session.user.id;
     const imageId = path.basename(req.file.filename,path.extname(req.file.filename));
     const fileExt = path.extname(req.file.filename).slice(1);
-    console.error(imageId);
-    console.error(imageId, userId, fileExt, status, "\"", description, "\"");
     try {
         pool.execute(
             `INSERT INTO images (id, user_id, date, ext, status, \`desc\`) VALUES (?, ?, NOW(), ?, ?, ?)`,

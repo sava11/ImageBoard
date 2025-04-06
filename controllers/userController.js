@@ -56,6 +56,7 @@ exports.isAuthenticated = (req, res, next) => {
     }
     next();
 };
+
 exports.userHasStatus = (req, res, next) => {
     pool.query(`SELECT id,login,status FROM users WHERE id=${req.session.user.id} and status>2`, async (err, results) => {
         if (err || results.length === 0) {
